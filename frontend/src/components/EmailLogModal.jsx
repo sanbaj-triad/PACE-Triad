@@ -1,0 +1,124 @@
+import React, { useEffect, useState } from 'react';
+import { api } from '../utils/api';
+
+const EmailLogModal = ({ onClose, entityType, entityId }) => {
+    const [logs, setLogs] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchLogs = async () => {
+            try {
+                let url = '/emails/logs?limit=50';
+                if (entityType) url += `&entity_type=${entityType}`;
+                if (entityId) url += `&entity_id=${entityId}`;
+                const data = await api.get(url);
+                setLogs(data);
+            } catch (err) {
+                console.error("Failed to fetch Email logs", err);
+                setError("Failed to fetch logs");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchLogs();
+    }, [entityType, entityId]);
+
+    const handleDownloadFormat = () => {
+        const token = localStorage.getItem('token');
+        let url = `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/emails/logs/download`;
+        const params = new URLSearchParams();
+        if (entityType) params.append('entity_type', entityType);
+        if (entityId) params.append('entity_id', entityId);
+        if (params.toString()) url += `?${params.toString()}`;
+
+        fetch(url, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("Download failed");
+            return response.blob();
+        })
+        .then(blob => {
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = downloadUrl;
+            a.download = 'email_audit_logs.txt';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(downloadUrl);
+        })
+        .catch(err => {
+            console.error("Download Error", err);
+            alert("Failed to download logs.");
+        });
+    };
+
+    return (
+        <div className="modal-backdrop" onClick={onClose} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.5)', zIndex: 9999 }}>
+            <div className="modal-content" onClick={e => e.stopPropagation()} style={{ background: 'var(--bg-card)', padding: '2rem', borderRadius: '12px', width: '900px', maxWidth: '90vw', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                    <h2 style={{ margin: 0 }}>Email Output Audit Logs</h2>
+                    <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: 'var(--text-muted)' }}>&times;</button>
+                </div>
+                <div style={{ flex: 1, minHeight: '400px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                        <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Recent SMTP transmission activities securely logged across the application.</p>
+                        <button onClick={handleDownloadFormat} className="btn-secondary" style={{ padding: '0.4rem 1rem', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                            Download TXT
+                        </button>
+                    </div>
+                    
+                    {loading ? (
+                        <div>Loading logs...</div>
+                    ) : error ? (
+                        <div style={{ color: 'var(--error)' }}>{error}</div>
+                    ) : logs.length === 0 ? (
+                        <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>No email logs recorded yet.</div>
+                    ) : (
+                        <div style={{ overflowX: 'auto', background: 'var(--bg-card)', borderRadius: '8px', border: '1px solid var(--border)', maxHeight: '60vh', overflowY: 'auto' }}>
+                            <table className="data-table" style={{ margin: 0 }}>
+                                <thead style={{ position: 'sticky', top: 0, background: 'var(--bg-secondary)', zIndex: 1 }}>
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <th>User</th>
+                                        <th>Subject</th>
+                                        <th>Recipients</th>
+                                        <th>Status</th>
+                                        <th>Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {logs.map((log) => (
+                                        <tr key={log.id}>
+                                            <td style={{ whiteSpace: 'nowrap', fontSize: '0.85rem' }}>{new Date(log.timestamp).toLocaleString()}</td>
+                                            <td style={{ fontWeight: '500', fontSize: '0.85rem' }}>{log.created_by?.username || 'System'}</td>
+                                            <td style={{ fontSize: '0.85rem' }}>{log.subject?.substring(0, 40)}{log.subject?.length > 40 ? '...' : ''}</td>
+                                            <td style={{ fontSize: '0.85rem' }} title={log.recipients}>{log.recipients?.substring(0, 40)}{log.recipients?.length > 40 ? '...' : ''}</td>
+                                            <td>
+                                                <span style={{ 
+                                                    padding: '2px 8px', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 'bold',
+                                                    background: log.status === 'SUCCESS' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                                                    color: log.status === 'SUCCESS' ? '#22c55e' : '#ef4444' 
+                                                }}>
+                                                    {log.status}
+                                                </span>
+                                            </td>
+                                            <td style={{ maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '0.85rem', color: 'var(--text-muted)' }} title={log.details}>
+                                                {log.details || '-'}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default EmailLogModal;

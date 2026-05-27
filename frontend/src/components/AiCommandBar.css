@@ -1,0 +1,72 @@
+.ai-cmd-container {
+    padding: 0 0.5rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.ai-cmd-input {
+    background: var(--bg-dark);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 0.4rem 2rem 0.4rem 1rem;
+    color: var(--text-main);
+    width: 300px;
+    outline: none;
+    transition: box-shadow 0.2s;
+}
+
+.ai-cmd-input:focus {
+    box-shadow: 0 0 0 2px var(--primary);
+}
+
+.ai-cmd-btn {
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.ai-cmd-btn:hover {
+    opacity: 1;
+}
+
+.ai-draft-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.ai-draft-modal-content {
+    background: var(--bg-card);
+    padding: 2rem;
+    border-radius: 8px;
+    width: 500px;
+    max-width: 90vw;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border);
+    animation: draftPopIn 0.3s ease-out;
+}
+
+@keyframes draftPopIn {
+    from { opacity: 0; transform: scale(0.95) }
+    to { opacity: 1; transform: scale(1) }
+}
+
+.ai-draft-fields {
+    max-height: 50vh;
+    overflow-y: auto;
+    margin-top: 1rem;
+    padding-right: 0.5rem;
+}

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/TSE_PACE_tn.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TSE PACE - Project Accounting & Cost Engine</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    <script>
+      window.addEventListener("error", function(e) {
+        document.body.innerHTML += '<div style="background:red;color:white;padding:2rem;z-index:9999;position:fixed;top:0;left:0;right:0;white-space:pre-wrap;">FATAL: ' + (e.error ? e.error.stack : e.message) + '</div>';
+      });
+      window.addEventListener("unhandledrejection", function(e) {
+        document.body.innerHTML += '<div style="background:red;color:white;padding:2rem;z-index:9999;position:fixed;top:0;left:0;right:0;white-space:pre-wrap;">FATAL Async: ' + (e.reason ? e.reason.stack : e.reason) + '</div>';
+      });
+    </script>
+  </body>
+</html>

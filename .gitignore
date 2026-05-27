@@ -1,0 +1,25 @@
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+*.db
+!seed_data.py
+.env
+# Frontend
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+# IDE and OS
+.vscode/
+.idea/
+.DS_Store
+# Logs and temp files
+*.log
+*.txt
+!requirements.txt
+tmp/
+backups/
+ssl_certs/
+*.sql
+*.json
+attachments/

@@ -1,0 +1,28 @@
+# Development environments
+.venv/
+env/
+venv/
+node_modules/
+
+# Frontend (handled by its own Docker build process, backend doesn't need to copy it!)
+frontend/
+
+# Local databases (don't package local sqlite dbs into backend container)
+*.db
+*.sqlite3
+*.sql
+
+# Cache and temporary files
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store
+
+# Logs
+*.log
+
+# Git
+.git/
+
+# Test payloads and tmp files
+tmp/

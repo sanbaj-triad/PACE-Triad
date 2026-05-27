@@ -1,0 +1,1 @@
+project_unique_id,name,description,customer_id,lead_id,priority,project_type,customer_po,is_master_po,budget,do_not_invoice,is_virtual,use_project_billing_schedule,recurring_invoice_frequency,next_invoice_date,recurring_invoice_percentage,customer_pm_id,pm_id,location_id,invoice_type,status,start_date,due_date,created_by_id

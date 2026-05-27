@@ -1,0 +1,80 @@
+
+services:
+  db:
+    image: mariadb:10.6
+    container_name: invoice_project_lead-db-1
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: invoice_app
+      MYSQL_USER: invoice_user
+      MYSQL_PASSWORD: invoice_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - app-network
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: pace-phpmyadmin
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOST: db
+      PMA_USER: invoice_user
+      PMA_PASSWORD: invoice_password
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  backend:
+    container_name: pace-backend
+    image: triadsystemseng/pace-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - DATABASE_URL=mysql+pymysql://invoice_user:invoice_password@db/invoice_app
+      # Add other environment variables as needed (.env file works too)
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - app-network
+    volumes:
+      - ./attachments:/app/attachments  # Persist expense uploaded files natively to Windows host
+      - ./app/static/uploads:/app/app/static/uploads  # Persist project uploaded files natively
+
+  frontend:
+    container_name: pace-frontend
+    image: triadsystemseng/pace-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "7223:443"  # HTTPS port requested by user
+      - "7224:80"   # HTTP port for automated testing
+    volumes:
+      - ./ssl_certs:/etc/nginx/ssl:ro
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db_data:
+  attachments_data:

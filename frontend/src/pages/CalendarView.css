@@ -1,0 +1,121 @@
+/* Fix RBC text color specifically for dark mode */
+.calendar-container .rbc-month-view,
+.calendar-container .rbc-time-view,
+.calendar-container .rbc-agenda-view {
+    color: var(--text-main);
+    border-color: var(--border);
+}
+
+.calendar-container .rbc-header {
+    border-bottom: 1px solid var(--border);
+    padding: 0.5rem;
+    font-weight: 600;
+}
+
+.calendar-container .rbc-month-row,
+.calendar-container .rbc-day-bg {
+    border-color: var(--border);
+}
+
+.calendar-container .rbc-off-range-bg {
+    background-color: var(--bg-main);
+}
+
+.calendar-container .rbc-today {
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.calendar-container .rbc-event {
+    transition: transform 0.1s ease-in-out;
+}
+.calendar-container .rbc-event:hover {
+    transform: scale(1.02);
+}
+
+.calendar-container * {
+    border-color: var(--border) !important;
+}
+
+.calendar-container .rbc-toolbar button {
+    color: var(--text-main);
+    border-color: var(--border);
+}
+
+.calendar-container .rbc-toolbar button.rbc-active {
+    background-color: var(--primary);
+    color: white;
+    box-shadow: none;
+    border-color: var(--primary);
+}
+
+/* --- Agenda View Modifications --- */
+.rbc-agenda-time-cell {
+    display: none !important;
+}
+.rbc-agenda-view table.rbc-agenda-table thead > tr > th:nth-child(2) {
+    display: none !important;
+}
+
+/* --- Print Styles --- */
+@media print {
+    /* Hide navigation/header globally */
+    .sidebar, .top-bar, .dashboard-header {
+        display: none !important;
+    }
+    
+    /* Reset Layout Wrappers */
+    html, body, #root, .app-container, .main-content, .content-area, .dashboard-container {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    .calendar-container {
+        display: block !important;
+        width: 100% !important;
+        border: none !important;
+        padding: 0 !important;
+        background: white !important;
+        height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+    
+    .rbc-calendar {
+        width: 100% !important;
+        height: auto !important;
+        min-height: 800px;
+        overflow: visible !important;
+    }
+    
+    /* Make events printable */
+    .rbc-event {
+        background-color: white !important;
+        color: black !important;
+        border: 1px solid #999 !important;
+        page-break-inside: avoid;
+    }
+    
+    .rbc-agenda-view, .rbc-agenda-content, .rbc-agenda-table, .rbc-agenda-table * {
+        color: black !important;
+        border-color: #ddd !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+    
+    .rbc-toolbar {
+        display: none !important;
+    }
+
+    .print-only-header {
+        display: block !important;
+    }
+}
+
+.print-only-header {
+    display: none;
+}

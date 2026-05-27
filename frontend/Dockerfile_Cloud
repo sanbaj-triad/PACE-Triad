@@ -1,0 +1,18 @@
+# Use an official Nginx runtime as a parent image
+FROM nginx:alpine
+
+# Upgrade alpine OS packages to patch vulnerabilities upon build
+RUN apk update && apk upgrade && rm -rf /var/cache/apk/*
+
+# Copy the built React app into Nginx's HTML folder
+COPY dist/ /usr/share/nginx/html
+
+# Overwrite the default Nginx configuration with our custom config
+# Note: In Cloud Run, we use the HTTP-only setup port 8080 and bypass SSL requirements since GCP load balancers terminate SSL
+COPY nginx_cloud.conf /etc/nginx/conf.d/default.conf
+
+# Inform Docker that the container listens on port 8080 at runtime (Cloud Run Default)
+EXPOSE 8080
+
+# Start Nginx when the container launches
+CMD ["nginx", "-g", "daemon off;"]

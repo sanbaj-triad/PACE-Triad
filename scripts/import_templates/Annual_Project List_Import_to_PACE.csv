@@ -1,0 +1,382 @@
+ID,Project Number,Is Master,Name,Customer,Created,Project Manager,Customer P.O.-#,Budget,Invoiced To Date,Expenses
+188038,188038,Yes,"	XOM-S.Houston: New Building Project - Design Package",ExxonMobil,4/8/2025 4:16,,Please send your invoice to consultantinvoice@pagethink.com .  Project no. will be 33CM24124 for routing. Copy Hector Villarreal on the emial (hvillarreal@pagethink.com),0.00,22179.90,3526.36
+188039,188038,No,188038 -- 1) Design,ExxonMobil,2025-04-08 04:16,,,"20,250.00",10125.00,0.00
+188045,188038,No,188038 -- 2) On-Site Services and Consultation,ExxonMobil,2025-04-08 04:16,,,"18,546.00",9273.00,3526.36
+188048,188038,No,188038 -- 3) Project Management,ExxonMobil,2025-04-08 04:16,,,"2,781.90",2781.90,0.00
+188088,187107,No,187107 -- XOM: Port Everglades:  Radar/Tank Level Work,ExxonMobil,2025-04-14 10:55,,,"9,636.00",9636.00,0.00
+188100,188100,Yes,188100 -- XOM: Belgium - On-Site Training for Operators,ExxonMobil,2025-04-14 14:39,,,"13,200.00",13200.00,5477.85
+188289,188289,Yes,Seaport Canaveral: Supplier/Customer/Account Changes,Seaport Canaveral,2025-05-22 10:32,Zach Paolucci,PO# 372-601942,0.00,12045.00,0.00
+188290,188289,No,188289 -- 1) REMOTE SERVICES,Seaport Canaveral,2025-05-22 10:37,,,"10,037.50",10037.50,0.00
+188291,188289,No,188289 -- 2) PROJECT MANAGEMENT,Seaport Canaveral,2025-05-22 10:37,,,"2,007.50",2007.50,0.00
+188328,188328,Yes,BET-Sugar Creek: Additive injector reconfiguration,Buckeye Partners,2025-05-30 11:03,,,0.00,1536.15,0.00
+188329,188328,No,188328 -- 1) REMOTE PROGRAMMING AND STARTUP SERVICES,Buckeye Partners,2025-05-30 11:04,,,"1,536.15",1536.15,0.00
+188377,188377,Yes,CPC-Spartanburg and Collins: Butane offload system,Colonial Pipeline Terminals,2025-06-09 10:31,"Castano, Alfredo",Butane PO 343696,0.00,15899.00,1333.69
+188379,188377,No,188377 -- 1) Butane Offload T&M,Colonial Pipeline Terminals,2025-06-09 10:42,,,"112,763.00",15899.00,1333.69
+188405,188405,Yes,Par Pacific-Tacoma: Interface for Credit Check and Transaction to SAP,"Par Pacific Holdings, Inc.",2025-06-11 10:42,,,0.00,64526.50,0.00
+188406,188405,No,188405 -- 1) DEVELOPMENT AND TESTING,"Par Pacific Holdings, Inc.",2025-06-11 10:43,,,"44,300.00",44300.00,0.00
+188407,188405,No,188405 -- 2) COMMISSIONING,"Par Pacific Holdings, Inc.",2025-06-11 10:43,,,"11,810.00",11810.00,0.00
+188408,188405,No,188405 -- 3) PROJECT MANAGEMENT,"Par Pacific Holdings, Inc.",2025-06-11 10:43,,,"8,416.50",8416.50,0.00
+188412,188412,Yes,"	Par Pacific-Tacoma: Replacing Multiload II with Multiload II+ for all loading lanes","Par Pacific Holdings, Inc.",2025-06-11 10:52,,,0.00,21350.00,270.64
+188413,188412,No,188412 -- 1) HARDWARE (Swap),"Par Pacific Holdings, Inc.",2025-06-11 10:53,,,"21,350.00",21350.00,270.64
+188429,188429,Yes,JET-MOUNDVILLE: CCTV System,JET Infrastructure,2025-06-13 10:08,Carlos Castillo,#PO1192,0.00,5481.94,0.00
+188430,188429,No,188429 -- 1) DESIGN,JET Infrastructure,2025-06-13 10:09,,,165.00,165.00,0.00
+188431,188429,No,188429 -- 2) HARDWARE,JET Infrastructure,2025-06-13 10:09,,,"3,008.32",3008.32,0.00
+188432,188429,No,188429 -- 3) REMOTE SERVICES,JET Infrastructure,2025-06-13 10:10,,,"2,007.50",2007.50,0.00
+188433,188429,No,188429 -- 4) PROJECT MANAGEMENT,JET Infrastructure,2025-06-13 10:10,,,301.12,301.12,0.00
+188440,188440,Yes,KM-SOUTH HILL: Automatic order programming for Rail/Tug,Kinder Morgan,2025-06-16 11:01,John Rawls,PO 9651,0.00,8030.00,0.00
+188516,188516,Yes,XOM:ALL SITES- Pump Kill Reprogramming and Validation,ExxonMobil,2025-06-30 15:57,,charged to 2025 support PO,0.00,16863.00,0.00
+188517,188516,No,188516 -- 1) REMOTE SERVICES,ExxonMobil,2025-06-30 15:57,,,"14,052.50",14052.50,0.00
+188518,188516,No,188516 -- 2) PROJECT MANAGEMENT,ExxonMobil,2025-06-30 15:58,,,"2,810.50",2810.50,0.00
+188638,185208,No,185208 -- 40 Line Item - TRIAD ADDITIONAL SITE VISITS TMS PROJECT,"Par Pacific Holdings, Inc.",2025-07-25 11:37,,,"48,340.00",48340.00,0.00
+188662,188662,Yes,CPC-Spartanburg: Butane offload system (TOPTECH HARDWARE),Colonial Pipeline Terminals,2025-07-31 12:50,,344660 & 344658,0.00,48849.42,8128.57
+188669,188662,No,188662 -- 1) TOPTECH HARDWARE -- RCU II + (PO 344660),Colonial Pipeline Terminals,2025-08-04 09:58,,,"10,111.42",10111.42,0.00
+188670,188662,No,188662 -- 2) TOPTECH HARDWARE -- MULTILOAD SMP DIV 2 ENCLOSURE (PO 344660),Colonial Pipeline Terminals,2025-08-04 09:59,,,"7,904.00",7904.00,0.00
+188673,188662,No,188662 -- 3) TOPTECH HARDWARE -- MULTILOAD SMP DIV 1 ENCLOSURE (PO344658),Colonial Pipeline Terminals,2025-08-04 11:01,,,"20,164.00",20164.00,4902.01
+188674,188662,No,188662 -- 4) TERMINATION PANEL LANE 1 HARDWARE AND FABRICATION (PO344658),Colonial Pipeline Terminals,2025-08-04 11:02,,,"5,335.00",5335.00,3103.46
+188675,188662,No,188662 -- 5) TERMINATION PANEL LANE 2 HARDWARE AND FABRICATION (PO344658),Colonial Pipeline Terminals,2025-08-04 11:03,,,"5,335.00",5335.00,0.00
+188754,188754,Yes,Attaway - Menzies - FLL AP - New Fuel Control System,"Attaway Services Carolina, Inc.",2025-08-20 15:07,Jesse Varner,CE110,0.00,205760.00,52095.93
+188755,188754,No,188754 -- 1) DESIGN,"Attaway Services Carolina, Inc.",2025-08-20 15:08,,,"32,200.00",16100.00,0.00
+188756,188754,No,188754 -- 2) HARDWARE/SOFTWARE/RIO CABINETS,"Attaway Services Carolina, Inc.",2025-08-20 15:08,,,"137,040.00",68520.00,52095.93
+188757,188754,No,188754 -- 3) ON SITE STARTUP/TRAINING,"Attaway Services Carolina, Inc.",2025-08-20 15:08,,,"213,405.00",106702.50,0.00
+188758,188754,No,188754 -- 4) PROJECT MANAGEMENT,"Attaway Services Carolina, Inc.",2025-08-20 15:09,,,"28,875.00",14437.50,0.00
+188790,188790,Yes,XOM-MULTIPLE SITES: Terminal ALARP Projects GROUP B,ExxonMobil,2025-08-22 14:15,,Multiple PO's,0.00,129889.24,1773.71
+188791,188791,Yes,4510688714 -- XOM-Des Plaines: Terminal ALARP Project Group B,ExxonMobil,2025-08-26 09:42,,,0.00,25595.72,0.00
+188792,188792,Yes,4510688889 -- XOM-Hammond: Terminal ALARP Project Group B,ExxonMobil,2025-08-26 09:42,,,0.00,25518.97,0.00
+188793,188793,Yes,4510688884 -- XOM-Lockport: Terminal ALARP Project Group B,ExxonMobil,2025-08-26 09:42,,,0.00,29864.22,0.00
+188794,188791,No,188791 -- 1) DESIGN,ExxonMobil,2025-08-26 09:50,,,"14,700.00",14700.00,0.00
+188795,188791,No,188791 -- 2) REMOTE SERVICES,ExxonMobil,2025-08-26 09:51,,,"18,067.50",0.00,0.00
+188796,188791,No,188791 -- 3) ON SITE SERVICES,ExxonMobil,2025-08-26 09:51,,,"36,411.10",0.00,0.00
+188797,188791,No,188791 -- 4) PROJECT MANAGEMENT,ExxonMobil,2025-08-26 09:52,,,"10,895.72",10895.72,0.00
+188802,188792,No,188792 -- 1) DESIGN,ExxonMobil,2025-08-26 10:19,,,"8,400.00",8400.00,0.00
+188803,188792,No,188792 -- 2) REMOTE SERVICES,ExxonMobil,2025-08-26 10:19,,,"14,052.50",7026.25,0.00
+188804,188792,No,188792 -- 3) ON SITE SERVICES,ExxonMobil,2025-08-26 10:19,,,"36,411.10",0.00,0.00
+188805,188792,No,188792 -- 4) PROJECT MANAGEMENT,ExxonMobil,2025-08-26 10:20,,,"10,092.72",10092.72,0.00
+188810,188793,No,188793 -- 1) DESIGN,ExxonMobil,2025-08-26 10:37,,,"11,340.00",11340.00,0.00
+188811,188793,No,188793 -- 2) REMOTE SERVICES,ExxonMobil,2025-08-26 10:37,,,"16,060.00",8030.00,0.00
+188812,188793,No,188793 -- 3) ON SITE SERVICES,ExxonMobil,2025-08-26 10:37,,,"36,411.10",0.00,0.00
+188813,188793,No,188793 -- 4) PROJECT MANAGEMENT,ExxonMobil,2025-08-26 10:37,,,"10,494.22",10494.22,0.00
+188852,188852,Yes,BET-Omega: Phase II (2 sites),Buckeye Partners,2025-09-02 11:24,Victor Lumsden,C1-271960,0.00,18327.22,0.00
+188853,188852,No,188852 -- 1) ON SITE SERVICES,Buckeye Partners,2025-09-02 11:35,,,"15,516.60",14053.50,0.00
+188854,188852,No,188852 -- 2) PROJECT MANAGEMENT,Buckeye Partners,2025-09-02 11:36,,,"2,810.72",2810.72,0.00
+188917,185844,No,185844 -- 1) BELTON Additional Funds,Colonial Pipeline Terminals,2025-09-10 11:46,,,"15,010.50",11526.00,0.00
+188918,185844,No,185844 -- 1) PELHAM Additional Funds,Colonial Pipeline Terminals,2025-09-10 11:47,,,"15,010.50",11828.00,0.00
+188938,188938,Yes,4411399225 -- XOM-St. James DOE: Terminal ALARP Project Group B,ExxonMobil,2025-09-17 16:15,,,0.00,21986.11,0.00
+188939,188938,No,88938 -- 1) DESIGN,ExxonMobil,2025-09-17 16:20,,,"12,600.00",6300.00,0.00
+188940,188938,No,188938 -- 2) REMOTE SERVICES,ExxonMobil,2025-09-17 16:20,,,"20,075.00",10037.50,0.00
+188941,188938,No,188938 -- 3) ON SITE SERVICES,ExxonMobil,2025-09-17 16:20,,,"36,411.10",0.00,0.00
+188942,188938,No,188938 -- 4) PROJECT MANAGEMENT,ExxonMobil,2025-09-17 16:20,,,"11,297.22",5648.61,0.00
+188947,188947,Yes,PAR-All Sites : BOL Messaging modification,"Par Pacific Holdings, Inc.",2025-09-19 09:46,Tyler Wattles,4510691962,0.00,12000.00,0.00
+188948,188947,No,188947 -- 1) REMOTE SERVICES,"Par Pacific Holdings, Inc.",2025-09-19 09:48,,,"12,000.00",12000.00,0.00
+188950,188950,Yes,4510692353 -- XOM-Mokena: Terminal ALARP Project Group B,ExxonMobil,2025-09-19 10:51,,,0.00,26924.22,0.00
+188951,188950,No,188950 -- 1) DESIGN,ExxonMobil,2025-09-19 10:52,,,"8,400.00",8400.00,0.00
+188952,188950,No,188950 -- 2) REMOTE SERVICES,ExxonMobil,2025-09-19 10:53,,,"16,060.00",8030.00,0.00
+188953,188950,No,188950 -- 3) ON SITE SERVICES,ExxonMobil,2025-09-19 10:53,,,"36,411.10",0.00,0.00
+188954,188950,No,188950 -- 4) PROJECT MANAGEMENT,ExxonMobil,2025-09-19 10:53,,,"10,494.22",10494.22,0.00
+188960,188960,Yes,4510692356 -- XOM-St. James: Terminal ALARP Project Group B,ExxonMobil,2025-09-22 12:18,,,0.00,0.00,0.00
+188961,188960,No,188960 -- 1) DESIGN,ExxonMobil,2025-09-22 12:19,,,"8,400.00",0.00,0.00
+188962,188960,No,188960 -- 2) REMOTE SERVICES,ExxonMobil,2025-09-22 12:19,,,"16,060.00",0.00,0.00
+188963,188960,No,188960 -- 3) ON SITE SERVICES,ExxonMobil,2025-09-22 12:19,,,"36,411.10",0.00,0.00
+188964,188960,No,188960 -- 4) PROJECT MANAGEMENT,ExxonMobil,2025-09-22 12:20,,,"10,494.22",0.00,0.00
+189117,189117,Yes,BET-Louisville : ESSB Project,Buckeye Partners,2025-10-13 16:54,Kristin Sonday,C1-273512,0.00,21895.70,0.00
+189118,189117,No,189117 -- 4) DESIGN,Buckeye Partners,2025-10-13 16:55,,,"9,520.00",4760.00,0.00
+189119,189117,No,189117 -- 5) FCM PANEL HARDWARE,Buckeye Partners,2025-10-13 16:55,,,385.00,192.50,0.00
+189120,189117,No,189117 -- 3) REMOTE PROGRAMMING SERVICES,Buckeye Partners,2025-10-13 16:56,,,"4,827.90",2463.95,0.00
+189121,189117,No,189117 -- 1) ON SITE STARTUP SERVICES,Buckeye Partners,2025-10-13 16:56,,,"17,814.00",8907.00,0.00
+189122,189117,No,189117 -- 2) PROJECT MANAGEMENT,Buckeye Partners,2025-10-13 16:56,,,"3,396.28",1698.14,0.00
+189150,189150,Yes,4510695316 -- XOM: Lockport - Reprogramming Conductivity Controls to TMS and Multiload (LUMP SUM 2/OPEX EFFORT),ExxonMobil,2025-10-15 11:07,,Purchase Order U57 / 4510695316,0.00,4083.75,0.00
+189157,189150,No,189150 -- 1) REMOTE SERVICES,ExxonMobil,2025-10-15 11:15,,,"6,022.50",3027.75,0.00
+189158,189150,No,189150 -- 2) ON SITE SERVICES,ExxonMobil,2025-10-15 11:15,,,"23,305.50",0.00,0.00
+189159,189150,No,189150 -- 3) PROJECT MANAGEMENT,ExxonMobil,2025-10-15 11:15,,,"2,112.00",1056.00,0.00
+189300,189300,Yes,BET-Niles: VRU integration project,Buckeye Partners,2025-10-30 11:12,Alexander Yanovich,C1-274160,0.00,19940.29,1514.62
+189301,189300,No,189300 -- 1) DESIGN,Buckeye Partners,2025-10-30 11:26,,,"3,630.00",3630.00,0.00
+189302,189300,No,189300 -- 2) HARDWARE,Buckeye Partners,2025-10-30 11:26,,,"2,939.73",2939.73,1514.62
+189303,189300,No,189300 -- 3) REMOTE SERVICES,Buckeye Partners,2025-10-30 11:26,,,"4,389.00",4389.00,0.00
+189304,189300,No,189300 -- 4) ON SITE SERVICES,Buckeye Partners,2025-10-30 11:26,,,"6,388.00",6388.00,0.00
+189305,189300,No,189300 -- 5) PROJECT MANAGEMENT,Buckeye Partners,2025-10-30 11:27,,,"1,616.55",1616.55,0.00
+189351,189351,Yes,XOM-ALL Sites US: Ignition Update to retire Panelview,ExxonMobil,2025-11-12 09:50,Johnny Canady,SUPPORT PO,0.00,22082.50,0.00
+189352,189351,No,189351 -- 1) REMOTE SERVICES,ExxonMobil,2025-11-12 09:52,,,"20,075.00",20075.00,0.00
+189357,189251,No,189351 -- 2) PROJECT MANAGEMENT,ExxonMobil,2025-11-12 10:20,,,"2,007.50",2007.50,0.00
+189393,189393,Yes,TAS-Countrymark: Design,tastechnical,2025-11-18 11:33,Paul.Steenwyk@tastechnicalconsulting.com,25101,0.00,1400.00,0.00
+189394,189393,No,189393 -- 1) DESIGN SERVICES,tastechnical,2025-11-18 11:53,,,"1,400.00",1400.00,0.00
+189506,189300,No,189300 -- CO# 104 - ADDITIONAL HARDWARE ,Buckeye Partners,2025-12-05 11:20,,,977.01,977.01,0.00
+189511,189511,Yes,CBE-2026 Annual Support,"Cold Brook Energy, Inc.",2025-12-08 14:00,Kevin Fish,,0.00,7768.00,0.00
+189512,189511,No,CBE-2026 Annual Support,"Cold Brook Energy, Inc.",2025-12-08 14:00,,,"7,768.00",7768.00,0.00
+189518,189511,No,CBE-2026 Annual Support  - EXTRA HARDWARE,"Cold Brook Energy, Inc.",2025-12-08 14:00,,,0.00,0.00,0.00
+189519,189511,No,CBE-2026 Annual Support - HELP DESK SMALL PROJECTS,"Cold Brook Energy, Inc.",2025-12-08 14:00,,,0.00,0.00,0.00
+189520,189511,No,CBE-2026 Annual Support - ENGINEERING SMALL PROJECTS,"Cold Brook Energy, Inc.",2025-12-08 14:00,,,0.00,0.00,0.00
+189530,189530,Yes,BET-Atlanta: Load rack Upgrade,Buckeye Partners,2025-12-11 10:32,Kristin Sonday,C1-275551,0.00,89268.98,9999.08
+189531,189530,No,189530 -- 4) DESIGN AND DRAWINGS,Buckeye Partners,2025-12-11 10:35,,,"39,100.00",39100.00,0.00
+189532,189530,No,189530 -- 1) FABRICATED FCM PANELS,Buckeye Partners,2025-12-11 10:36,,,"30,908.00",30908.00,9999.08
+189533,189530,No,"189530 -- 2) PLC, HMI, TMS, MULTILOAD PROGRAMMING AND TESTING",Buckeye Partners,2025-12-11 10:36,,,"4,650.00",1162.50,0.00
+189534,189530,No,189530 -- 3) ONSITE STARTUP SERVICES,Buckeye Partners,2025-12-11 10:37,,,"47,920.00",11980.00,0.00
+189535,189530,No,189530 -- 5) PROJECT MANAGEMENT,Buckeye Partners,2025-12-11 10:37,,,"6,308.40",1577.10,0.00
+189580,189580,Yes,BET-Montgomery: VRU Integration,Buckeye Partners,2025-12-15 15:40,,C1-275862,0.00,4291.60,266.24
+189581,189850,No,189580 -- 1) Design,Buckeye Partners,2025-12-15 15:51,,,"3,630.00",907.50,0.00
+189582,189580,No,189580 -- 2) Hardware,Buckeye Partners,2025-12-15 15:52,,,"1,142.80",285.70,266.24
+189583,189580,No,189580 -- 3) Remote Services,Buckeye Partners,2025-12-15 15:52,,,"4,389.00",1097.25,0.00
+189584,189580,No,189580 -- 4) On Site Services,Buckeye Partners,2025-12-15 15:52,,,"6,388.00",1597.00,0.00
+189585,189580,No,189580 -- 5) Project Management,Buckeye Partners,2025-12-15 15:53,,,"1,616.55",404.15,0.00
+189604,189604,Yes,BET-Multiple Sites: 2026 TMS7 - Rollout (10 Locations) ,Buckeye Partners,2025-12-16 15:38,Victor Lumsden,C1-275807,0.00,71708.00,10499.08
+189605,189604,No,189604 -- 1) Remote Services,Buckeye Partners,2025-12-16 15:42,,,"7,750.00",3875.00,0.00
+189606,189604,No,189604 -- 2) On Site Services,Buckeye Partners,2025-12-16 15:43,,,"120,300.00",60150.00,10499.08
+189607,189604,No,189604 -- 3) Project Management,Buckeye Partners,2025-12-16 15:43,,,"15,366.00",7683.00,0.00
+189626,189626,Yes,Sunshine - Marathon : New Bulk Plant programming and commissioning,Sunshine Gasoline,2025-12-17 16:35,Mario Zamora,Written Approval,"51,380.00",51380.00,4513.04
+189627,189626,No,HMI LICENSE AND PROGRAMMING,Sunshine Gasoline,2025-12-17 16:44,,,0.00,9844.00,2035.80
+189629,189626,No,"	PROGRAMMING, TESTING AND PRE-COMMISSIONING",Sunshine Gasoline,2025-12-17 16:47,,,"7,300.00",7300.00,0.00
+189630,189626,No,ON SITE COMMISSIONING SERVICES,Sunshine Gasoline,2025-12-17 16:47,,,"30,460.00",30460.00,2477.24
+189631,189626,No,PROJECT MANAGEMENT,Sunshine Gasoline,2025-12-17 16:47,,,0.00,3776.00,0.00
+189644,189644,Yes,BET-Pilot Site : Load Rack Data to VCU PLC,Buckeye Partners,2025-12-23 15:08,"Kunow, Ashley",C1-276032,0.00,4355.36,0.00
+189645,189644,No,189644 -- 1) Hardware New Gas,Buckeye Partners,2025-12-23 15:14,,,"1,800.00",450.00,0.00
+189646,189644,No,189644 -- 2) Remote Programming and Testing,Buckeye Partners,2025-12-23 15:16,,,"7,315.00",1828.75,0.00
+189647,189644,No,189644-- 3) Onsite Startup,Buckeye Partners,2025-12-23 15:16,,,"6,388.00",1597.00,0.00
+189648,189644,No,189644 -- 4) Project Management,Buckeye Partners,2025-12-23 15:16,,,"1,918.42",479.61,0.00
+189662,189662,Yes,BET-ALLSITES: 2026 ANNUAL SUPPORT,Buckeye Partners,2026-01-01 15:26,,,0.00,611326.05,791.81
+189663,189662,No,BET-ALLSITES: 2026 ANNUAL SUPPORT  - TMS_PLC,Buckeye Partners,2026-01-01 15:28,Victor Lumsden,C1-275867,"561,732.00",561732.00,0.00
+189664,189662,No,BET-ALLSITES: 2026 ANNUAL SUPPORT  -- Emmissions,Buckeye Partners,2026-01-01 15:29,Victor Lumsden,C1-275488,"14,167.51",14167.61,0.00
+189665,189662,No,BET-ALLSITES: 2026 ANNUAL SUPPORT -- Rail,Buckeye Partners,2026-01-01 15:29,Victor Lumsden,C1-275489,"14,860.29",14860.29,0.00
+189666,189662,No,BET-ALLSITES: 2026 ANNUAL SUPPORT -- Regmon,Buckeye Partners,2026-01-01 15:30,Victor Lumsden,C1-275490,"7,163.15",7163.15,0.00
+189667,189662,No,BET-ALLSITES: 2026 ANNUAL SUPPORT -- Extra Hardware,Buckeye Partners,2026-01-01 15:33,,189667,0.00,1225.00,0.00
+189668,189662,No,BET-ALLSITES: 2026 ANNUAL SUPPORT -- Help Desk Small Projects,Buckeye Partners,2026-01-01 15:34,,,0.00,2685.00,0.00
+189669,189662,No,BET-ALLSITES: 2026 ANNUAL SUPPORT -- Engineering Small projects,Buckeye Partners,2026-01-01 15:34,,,0.00,3660.00,791.81
+189670,190662,No,BET-ALLSITES: 2026 ANNUAL SUPPORT -- Virtual Meter Setup - $1935/day,Buckeye Partners,2026-01-01 15:35,Victor Lumsden,,0.00,0.00,0.00
+189671,189662,No,BET-ALLSITES: 2026 ANNUAL SUPPORT  - Tank Straps,Buckeye Partners,2026-01-01 15:54,Carlton Stine,C1-276259,"30,700.00",5833.00,0.00
+189688,189688,Yes,ERG-AllSites: 2026 Help Desk Support,"Ergon Asphalt & Emulsions, Inc.",2026-01-01 16:56,Sean Randall,signed Quote,"6,572.00",3234.00,0.00
+189694,189688,No,ERG-AllSites: 2026 Help Desk Support -- Extra Hardware,"Ergon Asphalt & Emulsions, Inc.",2026-01-01 17:16,,,0.00,0.00,0.00
+189695,189688,No,ERG-AllSites: 2026 Help Desk Support -- Help Desk Small Projects,"Ergon Asphalt & Emulsions, Inc.",2026-01-01 17:16,,,0.00,0.00,0.00
+189696,189688,No,ERG-AllSites: 2026 Help Desk Support -- Engineering Small Projects,"Ergon Asphalt & Emulsions, Inc.",2026-01-01 17:17,,,0.00,0.00,0.00
+189697,189697,Yes,XOM-Allsites 2026 Support,ExxonMobil,2026-01-01 17:19,Calvin Huang,4411423485,"600,000.00",205729.42,8968.38
+189698,189697,No,1) XOM-Allsites 2026 Support -- Help Desk Support,ExxonMobil,2026-01-01 17:23,Calvin Huang,4411423486,"97,920.00",48960.00,0.00
+189699,187697,No,2) XOM-Allsites 2026 Support -- Customer Service Support,ExxonMobil,2026-01-01 17:24,Calvin Huang,4411423485,"164,472.00",82236.00,0.00
+189700,187697,No,3) XOM-Allsites 2026 Support -- Extra Hardware,ExxonMobil,2026-01-01 17:24,,,0.00,21919.34,4517.30
+189701,187697,No,4) XOM-Allsites 2026 Support -- Help Desk Support - Small Projects,ExxonMobil,2026-01-01 17:24,,,0.00,0.00,0.00
+189702,187697,No,5) XOM-Allsites 2026 Support -- Engineering - Small Projects,ExxonMobil,2026-01-01 17:25,,,0.00,52614.08,4451.08
+189703,187697,No,6) XOM-Allsites 2026 Support -- Help Desk Support - NORWAY,ExxonMobil,2026-01-01 17:26,,,0.00,0.00,0.00
+189713,189713,Yes,LIN-2026 All-Sites Support,Lincoln Terminal Company,2026-01-01 17:53,Tim Fox,no PO,0.00,13307.00,0.00
+189714,189713,No,1) LIN-2026 All-Sites 2026 Help Desk Support,Lincoln Terminal Company,2026-01-01 17:54,,,0.00,11372.00,0.00
+189715,189713,no,2) LIN-2026 All-Sites 2026 - Help Desk Small Projects,Lincoln Terminal Company,2026-01-01 17:55,,,0.00,0.00,0.00
+189716,189713,No,3) LIN-2026 All-Sites 2026 - Engineering Small Projects,Lincoln Terminal Company,2026-01-01 17:55,,,0.00,1935.00,0.00
+189717,189713,No,4) LIN-2026 All-Sites 2026 - Extra Hardware,Lincoln Terminal Company,2026-01-01 17:55,,,0.00,0.00,0.00
+189718,189713,No,LIN-All-Sites 2026 Help Desk Support,Lincoln Terminal Company,2026-01-01 18:05,,,0.00,11372.00,0.00
+189719,189713,No,LIN-All-Sites 2026 Help Desk Support - Alexandria - Load Rack,Lincoln Terminal Company,2026-01-01 18:06,Tim Fox,,"5,548.00",2774.00,0.00
+189720,189713,No,LIN-All-Sites 2026 Help Desk Support - Natchez - Load Rack,Lincoln Terminal Company,2026-01-01 18:06,,,"5,548.00",2774.00,0.00
+189721,189713,No,LIN-All-Sites 2026 Help Desk Support - spartanburg - Load Rack,Lincoln Terminal Company,2026-01-01 18:07,,,"5,548.00",2774.00,0.00
+189722,189713,No,LIN-All-Sites 2026 Help Desk Support - West Inman - PLC,Lincoln Terminal Company,2026-01-01 18:07,,,"6,200.00",3050.00,0.00
+189723,189713,No,LIN-All-Sites 2026 Help Desk - Small Projects,Lincoln Terminal Company,2026-01-01 18:07,,,0.00,0.00,0.00
+189724,189713,No,LIN-All-Sites 2026 Engineering Small Projects,Lincoln Terminal Company,2026-01-01 18:08,,,0.00,0.00,0.00
+189725,189713,No,LIN-All-Sites 2026 - Extra Hardware,Lincoln Terminal Company,2026-01-01 18:08,,,0.00,0.00,0.00
+189758,189758,Yes,ECO-ALLSITES: 2026 Help Desk Support,ECO Energy,2026-01-01 18:38,,Signe Quote - Attached,"53,328.00",26703.51,557.52
+189759,189758,No,ECO-ALLSITES: 2026 Help Desk Support - 8 Terminals,ECO Energy,2026-01-01 18:40,Cara Waters,signed quote,"53,328.00",26664.00,0.00
+189760,189758,No,2) ECO-ALLSITES: 2026  Help Desk -- Small Projects,ECO Energy,2026-01-01 18:41,,,0.00,39.51,557.52
+189761,189760,No,2) ECO-ALLSITES: 2026 Engineering- Small Projects,ECO Energy,2026-01-01 18:41,,,0.00,0.00,0.00
+189762,189758,No,2) ECO-ALLSITES: 2026 Support -- Extra Projects,ECO Energy,2026-01-01 18:41,,,0.00,0.00,0.00
+189771,189771,Yes,PAR-All-Sites: 2026 Help Desk Support,"Par Pacific Holdings, Inc.",2026-01-01 19:04,Smaranda Draghia,4700020971,0.00,54030.00,0.00
+189772,189771,No,PAR-All-Sites: 2026 Help Desk Support,"Par Pacific Holdings, Inc.",2026-01-01 19:07,,,0.00,54030.00,0.00
+189773,189771,No,1) PAR-All-Sites: 2026 Help Desk Support 4 Terminals,"Par Pacific Holdings, Inc.",2026-01-01 19:07,Smaranda Draghia,4700020971,0.00,15216.00,0.00
+189774,189771,No,2) PAR-All-Sites: 2026 Customer Service Support - 4 Terminals,"Par Pacific Holdings, Inc.",2026-01-01 19:07,,,"56,016.00",28008.00,0.00
+189775,189771,No,PAR-All-Sites: 2026 Help Desk - Small Projects,"Par Pacific Holdings, Inc.",2026-01-01 19:08,,,0.00,0.00,0.00
+189776,189771,No,PAR-All-Sites: 2026 Engineering - Small Projects,"Par Pacific Holdings, Inc.",2026-01-01 19:08,,,0.00,0.00,0.00
+189777,189771,No,PAR-All-Sites: 2026 - Extra Hardware,"Par Pacific Holdings, Inc.",2026-01-01 19:08,,,0.00,0.00,0.00
+189783,189771,No,3) PAR-All-Sites: 2026 Customer Service Support - Tacoma Terminal,"Par Pacific Holdings, Inc.",2026-01-01 19:13,,,0.00,10806.00,0.00
+189793,189793,Yes,ZEN-2026 Help Desk Support - Portland,Zenith Energy Terminals Holdings LLC ,2026-01-01 20:11,jt.hendrix@zenithterminals.com,0034932,0.00,3418.00,0.00
+189794,189793,No,ZEN-2026 Help Desk Support - Portland,Zenith Energy Terminals Holdings LLC ,2026-01-01 20:15,, ,"6,836.00",3418.00,0.00
+189795,189793,No,ZEN-2026 Help Desk Support - Help Desk - Small Projects,Zenith Energy Terminals Holdings LLC ,2026-01-01 20:15,,,0.00,0.00,0.00
+189796,189793,No,ZEN-2026 Help Desk Support - Engineering - Small Projects,Zenith Energy Terminals Holdings LLC ,2026-01-01 20:16,,,0.00,0.00,0.00
+189797,189793,No,ZEN-2026 Help Desk Support - Extra Hardware,Zenith Energy Terminals Holdings LLC ,2026-01-01 20:16,,,0.00,0.00,0.00
+189811,189811,Yes,SC-Seaport Canaveral: 2026 Help Desk Support,Seaport Canaveral,2026-01-01 20:35,,372-602082,0.00,3872.00,0.00
+189812,189811,No,SC-Seaport Canaveral: 2026 Help Desk Support,Seaport Canaveral,2026-01-01 20:39,,,"7,744.00",3872.00,0.00
+189813,189811,No,SC-Seaport Canaveral: 2026 Help Desk - Small Projects,Seaport Canaveral,2026-01-01 20:39,,,0.00,0.00,0.00
+189814,189811,No,SC-Seaport Canaveral: 2026 Engineering - Small Projects,Seaport Canaveral,2026-01-01 20:39,,,0.00,0.00,0.00
+189815,189811,No,SC-Seaport Canaveral: 2026 - Extra Hardware,Seaport Canaveral,2026-01-01 20:39,,,0.00,0.00,0.00
+189825,189825,Yes,Ray-2026 Help Desk Support,"Ray Terminals, LLC",2026-01-01 20:51,Justin Ray,No PO,0.00,3504.00,0.00
+189826,189825,No,Ray-2026 Help Desk Support,"Ray Terminals, LLC",2026-01-01 20:52,Justin Ray,No PO,"7,008.00",3504.00,0.00
+189827,189825,No,Ray-2026 Help Desk - Small Projects,"Ray Terminals, LLC",2026-01-01 20:52,,,0.00,0.00,0.00
+189828,189825,No,Ray-2026 Engineering - Small Projects,"Ray Terminals, LLC",2026-01-01 20:52,,,0.00,0.00,0.00
+189829,189825,No,Ray-2026 - Extra Hardware,"Ray Terminals, LLC",2026-01-01 20:52,,,0.00,0.00,0.00
+189834,189834,Yes,PBF-2026 Help Desk Support,PBF Energy,2026-01-01 21:20,"Donnelly, Jennifer",multiple PO's see noted,0.00,33910.05,0.00
+189835,189834,No,PBF-2026 Help Desk Support,PBF Energy,2026-01-01 21:28,,,0.00,32864.00,0.00
+189836,189834,No,PBF-2026 Help Desk - SMALL Projects,PBF Energy,2026-01-01 21:28,,,0.00,0.00,0.00
+189837,189834,No,PBF-2026 Engineering - SMALL Projects,PBF Energy,2026-01-01 21:28,,,0.00,1046.05,0.00
+189838,189834,No,PBF-2026 - Extra Hardware,PBF Energy,2026-01-01 21:28,,,0.00,0.00,0.00
+189897,189897,Yes,KM-All-Sites: 2026 Help Desk Support,Kinder Morgan,2026-01-04 19:54,,Pending,0.00,18597.40,6905.22
+189898,189897,No,KM-All-Sites: 2026 Help Desk Support,Kinder Morgan,2026-01-04 19:57,,,"13,744.00",18597.40,6905.22
+189899,189897,No,KM-All-Sites: 2026 Help Desk -- Small Projects,Kinder Morgan,2026-01-04 19:57,,,0.00,0.00,0.00
+189900,189897,No,KM-All-Sites: 2026 Engineering -- Small Projects,Kinder Morgan,2026-01-04 19:58,,,0.00,0.00,0.00
+189902,189897,No,KM-All-Sites: 2026 - Extra Hardware,Kinder Morgan,2026-01-04 19:58,,,0.00,0.00,0.00
+189909,189909,Yes,CPT-All-Sites: 2026 Help Desk Support,Colonial Pipeline Terminals,2026-01-04 20:18,,,0.00,11253.00,0.00
+189910,189909,No,CPT-All-Sites: 2026 Help Desk Support,Colonial Pipeline Terminals,2026-01-04 20:20,,,"16,692.00",11253.00,0.00
+189911,189909,No,CPT-All-Sites: 2026 Help Desk - Small Projects,Colonial Pipeline Terminals,2026-01-04 20:21,,,0.00,0.00,0.00
+189912,189909,No,CPT-All-Sites: 2026 Engineering - Small Projects,Colonial Pipeline Terminals,2026-01-04 20:21,,,0.00,0.00,0.00
+189913,189909,No,CPT-All-Sites: 2026 - Extra Hardware,Colonial Pipeline Terminals,2026-01-04 20:22,,,0.00,0.00,0.00
+189938,189938,Yes,JET - 2026 Help Desk Support,JET Infrastructure,2026-01-04 20:37,Dan Andrews,,0.00,82985.00,0.00
+189939,189938,No,JET - 2026 Help Desk Support,JET Infrastructure,2026-01-04 20:38,,,"82,985.00",82985.00,0.00
+189940,189938,No,JET - 2026 Help Desk - Small Projects,JET Infrastructure,2026-01-04 20:39,,,0.00,0.00,0.00
+189941,189938,No,JET - 2026 Engineering - Small Projects,JET Infrastructure,2026-01-04 20:39,,,0.00,0.00,0.00
+189942,189938,No,JET - 2026 - Extra Hardware,JET Infrastructure,2026-01-04 20:39,,,0.00,0.00,0.00
+189943,189943,Yes,ASMG - 2026 Help Desk Support,All States Material Group,2026-01-04 20:41,,,0.00,0.00,0.00
+189944,189943,No,ASMG - 2026 Help Desk Support,All States Material Group,2026-01-04 20:43,,,0.00,0.00,0.00
+189945,189943,No,ASMG - 2026 Help Desk - Small Projects,All States Material Group,2026-01-04 20:43,,,0.00,0.00,0.00
+189946,189943,No,ASMG - 2026 Engineering - Small Projects,All States Material Group,2026-01-04 20:43,,,0.00,0.00,0.00
+189947,189943,No,ASMG - 2026 - Extra Hardware,All States Material Group,2026-01-04 20:43,,,0.00,0.00,0.00
+189948,189948,Yes,BWC-2026 Help Desk Support. MOBILE,BWC Terminals,2026-01-04 20:48,Stephen Pendarvis,80PO-10000230,"4,245.00",2124.00,0.00
+189949,189948,No,BWC-2026 Help Desk Support - MOBILE,BWC Terminals,2026-01-04 20:49,Stephen Pendarvis,,"4,248.00",2124.00,0.00
+189950,189948,No,BWC-2026 Help Desk - Small Projects,BWC Terminals,2026-01-04 20:50,,,0.00,0.00,0.00
+189951,189948,No,BWC-2026 Engineering - Small Projects,BWC Terminals,2026-01-04 20:51,,,0.00,0.00,0.00
+189952,189948,No,BWC-2026 - Extra Hardware,BWC Terminals,2026-01-04 20:51,,,0.00,0.00,0.00
+189965,189965,Yes,REP-2026 Help Desk Support,Repauno Port & Rail Terminal,2026-01-04 21:00,Frank Fulginiti,,0.00,3900.00,0.00
+189966,189965,No,REP-2026 Help Desk Support,Repauno Port & Rail Terminal,2026-01-04 21:02,Frank Fulginiti,REP26005,"7,800.00",3900.00,0.00
+189967,189965,No,REP-2026 Help Desk - Small Projects,Repauno Port & Rail Terminal,2026-01-04 21:02,,,0.00,0.00,0.00
+189968,189965,No,REP-2026 Engineering - Small Projects,Repauno Port & Rail Terminal,2026-01-04 21:02,,,0.00,0.00,0.00
+189969,189965,No,REP-2026 - Extra Hardware,Repauno Port & Rail Terminal,2026-01-04 21:02,,,0.00,0.00,0.00
+189974,189974,Yes,TSE - Triad 2026,Triad Systems Engineering,2026-01-04 21:13,,,0.00,0.00,139308.11
+189975,189974,No,TSE - Triad 2026,Triad Systems Engineering,2026-01-04 21:14,,,0.00,0.00,23429.94
+189976,189974,No,TSE - 2026 Bid Walk/Site Visits,Triad Systems Engineering,2026-01-04 21:15,,,0.00,0.00,0.00
+189977,189974,No,TSE - 2026 Expenses:  Office Supplies,Triad Systems Engineering,2026-01-04 21:16,,,0.00,0.00,522.70
+189978,189974,No,TSE - 2026 Cleaning,Triad Systems Engineering,2026-01-04 21:16,,,0.00,0.00,0.00
+189979,189974,No,TSE - 2026 Stock Hardware (items ordered for TSE Billed Projects),Triad Systems Engineering,2026-01-04 21:16,,,0.00,0.00,9111.53
+189980,189974,No,"TSE - 2026 Hardware(computer HW, SW/Licenses/Subscriptions/Software",Triad Systems Engineering,2026-01-04 21:17,,,0.00,0.00,53453.65
+189981,189974,No,TSE - 2026 Education/Training/Seminars,Triad Systems Engineering,2026-01-04 21:17,,,0.00,0.00,0.00
+189982,189974,No,TSE - 2026 Internal Tasks,Triad Systems Engineering,2026-01-04 21:17,,,0.00,0.00,88.96
+189983,189974,No,TSE - 2026 Non Contract Billable work,Triad Systems Engineering,2026-01-04 21:17,,,0.00,0.00,0.00
+189984,189974,No,TSE - 2026 Holiday,Triad Systems Engineering,2026-01-04 21:18,,,0.00,0.00,0.00
+189985,189974,No,TSE - 2026 PTO,Triad Systems Engineering,2026-01-04 21:18,,,0.00,0.00,0.00
+189986,189974,No,TSE - 2026 Subcontractor,Triad Systems Engineering,2026-01-04 21:18,,,0.00,0.00,0.00
+189987,189974,No,TSE - 2026 Marketing/Trade Shows/Promotional items,Triad Systems Engineering,2026-01-04 21:18,,,0.00,0.00,0.00
+189988,189974,No,TSE - 2026 Nepal,Triad Systems Engineering,2026-01-04 21:18,,,0.00,0.00,2701.33
+189989,189974,No,TSE - 2026 Sigma Con,Triad Systems Engineering,2026-01-04 21:19,,,0.00,0.00,50000.00
+189991,189991,Yes,ET: Energy Transfer 2026,,2026-01-04 21:21,,,0.00,0.00,0.00
+189992,189991,No,ET: Energy Transfer 2026,,2026-01-04 21:22,,,0.00,0.00,0.00
+189993,189991,No,ET: 2026 Help Desk - Small Projects,,2026-01-04 21:22,,,0.00,0.00,0.00
+189994,189991,No,ET: 2026 Engineering - Small Projects,,2026-01-04 21:22,,,0.00,0.00,0.00
+189995,189991,No,ET: 2026 - Extra Project,,2026-01-04 21:23,,,0.00,0.00,0.00
+190079,190079,Yes,BET-Columbus South : PVCU Integration,Buckeye Partners,2026-01-15 08:10,David Oldham,C1-276587,0.00,3798.39,0.00
+190080,190079,No,190079 -- 1) Design,Buckeye Partners,2026-01-15 08:21,,,"2,800.00",700.00,0.00
+190081,190079,No,190079 -- 2) Remote Services,Buckeye Partners,2026-01-15 08:21,,,"4,389.00",1097.25,0.00
+190082,190079,No,190079 -- 3) On Site Services,Buckeye Partners,2026-01-15 08:21,,,"6,388.00",1597.00,0.00
+190083,199079,No,190079 -- 4) Project Management,Buckeye Partners,2026-01-15 08:22,,,"1,616.55",404.14,0.00
+190097,190097,Yes,PAR-Rockwell Studio 5000 License,"Par Pacific Holdings, Inc.",2026-01-15 10:34,,4510694777,0.00,17925.60,15324.32
+190098,190097,No,PAR-Rockwell Studio 5000 License,"Par Pacific Holdings, Inc.",2026-01-15 10:36,,,"17,925.60",17925.60,15324.32
+190150,190150,Yes,BET-Macon VRU integration,Buckeye Partners,2026-01-26 08:28,Kristin Sonday,C1-277074,0.00,27857.84,5363.80
+190151,190150,No,190150 -- 1)  Design,Buckeye Partners,2026-01-26 08:37,,,"3,960.00",3960.00,0.00
+190152,190150,No,190150 -- 2) Hardware,Buckeye Partners,2026-01-26 08:37,,,"11,156.99",11156.99,5363.80
+190153,190150,No,190150 -- 3) Remote Services,Buckeye Partners,2026-01-26 08:38,,,"4,389.00",4389.00,0.00
+190154,190150,No,190150 -- 4) On Site Services,Buckeye Partners,2026-01-26 08:38,,,"6,690.00",6690.00,0.00
+190155,190150,No,190150 -- 5) Project Management,Buckeye Partners,2026-01-26 08:38,,,"1,661.85",1661.85,0.00
+190187,190187,Yes,TAS-Countrymark crude line project,tastechnical,2026-02-02 12:42,Bud Heavrin,,0.00,20460.00,0.00
+190188,190187,No,TAS-Countrymark : Crude Line project -- Site Survey,tastechnical,2026-02-02 12:49,,,0.00,6950.00,0.00
+190198,190198,Yes,PBF-Martinez:  Load Rack PLC Upgrade,PBF Energy,2026-02-04 10:56,,4502792572,0.00,34726.35,15650.04
+190199,190198,No,190198 -- 1) Design,PBF Energy,2026-02-04 11:00,,,"5,591.25",2795.63,0.00
+190200,190198,No,190198 -- 2) PLC Hardware,PBF Energy,2026-02-04 11:00,,,"33,411.84",16705.92,15650.04
+190201,190198,No,190198 -- 3) Remote Services - PLC Programming,PBF Energy,2026-02-04 11:00,,,"8,970.00",4485.00,0.00
+190202,190198,No,190198 -- 4) On Site Services,PBF Energy,2026-02-04 11:00,,,"11,810.00",5905.00,0.00
+190203,190198,No,190198 -- 5) Project Management,PBF Energy,2026-02-04 11:01,,,"2,493.60",1246.80,0.00
+190204,190198,No,190198 -- 6) Remote Services - HMI Programming,PBF Energy,2026-02-04 11:02,,,"7,176.00",3588.00,0.00
+190226,190226,Yes,XOM-Port Everglades: Seal Pot,ExxonMobil,2026-02-05 14:05,Justin Foster,4411435016,0.00,57525.22,23201.65
+190227,189226,No,190226 -- 1) Design,ExxonMobil,2026-02-05 14:07,,,"21,000.00",21000.00,0.00
+190228,190226,No,190226 -- 2) Panel Building Hardware,ExxonMobil,2026-02-05 14:08,,,"26,111.62",26111.62,23201.65
+190229,190226,No,190226 -- 3) Remote Services,ExxonMobil,2026-02-05 14:08,,,"6,385.50",6385.50,0.00
+190230,190226,No,190226 -- 4) On-site Services,ExxonMobil,2026-02-05 14:08,,,"13,805.00",0.00,0.00
+190231,190226,No,190226 -- 5) Project Management,ExxonMobil,2026-02-05 14:08,,,"4,038.10",4028.10,0.00
+190295,190295,Yes,PAR-Tacoma: Bio Diesel & Renewal Diesel Activation,"Par Pacific Holdings, Inc.",2026-02-18 14:35,Jim Lake,450212105,0.00,29264.32,11430.67
+190296,199295,No,190295 -- Line 20 - 1) Hardware,"Par Pacific Holdings, Inc.",2026-02-18 14:40,,,"10,926.00",10926.00,8935.84
+190297,190295,No,190295 -- Line 20 - 2) Remote Services,"Par Pacific Holdings, Inc.",2026-02-18 14:40,,,"2,128.50",2128.50,0.00
+190298,190295,No,190295 Line 20 -- 3) On-Site Services,"Par Pacific Holdings, Inc.",2026-02-18 14:42,,,"14,245.00",14245.00,2494.83
+190302,190295,No,190295 -- Line 20 - 4) Project Management,"Par Pacific Holdings, Inc.",2026-02-19 14:19,,,"1,964.82",1964.82,0.00
+190309,190295,No,190295 -- Line 20 - 1) Contingency,"Par Pacific Holdings, Inc.",2026-02-20 13:31,,,"10,242.51",0.00,0.00
+190311,190311,Yes,PRI-All-Sites: 2026 Help Desk Support,Primax Colombia S.A.,2026-02-20 14:05,Leydi Gonzalez Ortiz,4510061919,0.00,7424.00,0.00
+190313,190311,No,10 -- Line Item: Medellin: 2026 Help Desk Support,Primax Colombia S.A.,2026-02-20 14:08,,,"3,712.00",1856.00,0.00
+190314,190311,No,20 -- Line Item: Cartago: 2026 Help Desk Support,Primax Colombia S.A.,2026-02-20 14:08,,,"3,712.00",1856.00,0.00
+190315,190311,No,30 -- Line Item: Cartagena: 2026 Help Desk Support,Primax Colombia S.A.,2026-02-20 14:08,,,"3,712.00",1856.00,0.00
+190316,190311,No,40 -- Line Item: Puente Aranda: 2026 Help Desk Support,Primax Colombia S.A.,2026-02-20 14:09,,,"3,712.00",1856.00,0.00
+190334,190334,Yes,Attaway : RDU : Tank HLA system,"Attaway Services Carolina, Inc.",2026-02-20 15:51,,,0.00,24489.65,2517.51
+190335,190334,No,Design,"Attaway Services Carolina, Inc.",2026-02-20 15:53,,,"2,800.00",2800.00,0.00
+190336,190334,No,Hardware,"Attaway Services Carolina, Inc.",2026-02-20 15:53,,,"9,340.90",9340.90,2517.51
+190337,190334,No,Programming and Testing,"Attaway Services Carolina, Inc.",2026-02-20 15:53,,,"5,748.75",5748.75,0.00
+190338,190334,No,On-Site Commissioning,"Attaway Services Carolina, Inc.",2026-02-20 15:54,,,"6,600.00",6600.00,0.00
+190345,190345,Yes,CBE-Hampden: Addition of New loading arms,"Cold Brook Energy, Inc.",2026-02-25 00:27,,,0.00,0.00,11345.35
+190347,190347,Yes,ETP-Energy Transfer LP - AllSites 2026 HDS (NO SUPPORT - FOR PROJECT INV ONLY),Energy Transfer,2026-02-26 15:45,,,0.00,0.00,0.00
+190348,190347,No,ETP-HDS Small Projects,Energy Transfer,2026-02-26 15:46,,,0.00,0.00,0.00
+190349,190347,No,ETP-Engineering Small Projects,Energy Transfer,2026-02-26 15:46,,,0.00,0.00,0.00
+190350,190347,No,ETP-Additional Hardware,Energy Transfer,2026-02-26 15:46,,,0.00,0.00,0.00
+190356,190356,Yes,XOM-Baton Rouge: Seal Pot Integration,ExxonMobil,2026-03-02 11:09,Jessica Faulk,4411440330,0.00,62315.80,15025.18
+190357,190356,No,190356 -- 1) Design,ExxonMobil,2026-03-02 11:10,,,"18,900.00",18900.00,0.00
+190358,190356,No,190356 -- 2) Panel Building Hardware,ExxonMobil,2026-03-02 11:11,,,"19,187.20",19187.20,15025.18
+190359,190356,No,1990356 -- 3) Remote Services,ExxonMobil,2026-03-02 11:11,,,"6,385.50",6385.50,0.00
+190360,190356,No,190356 -- 4) On-Site Services,ExxonMobil,2026-03-02 11:11,,,"13,805.00",13805.00,0.00
+190361,190356,No,190356 -- 5) Project Management,ExxonMobil,2026-03-02 11:11,,,"4,038.10",4038.10,0.00
+190402,190402,Yes,BET-Omeaga Transformation : 2026 Sites,Buckeye Partners,2026-03-05 15:02,,C1-278694/C1-278694 CO104,0.00,7760.40,0.00
+190403,190402,No,190402 -- 1) On Site Services (8 sites),Buckeye Partners,2026-03-05 15:07,,,"53,520.00",6690.00,0.00
+190404,190402,No,190402 -- 2) On Site Services - Additional Resource (2 Sites),Buckeye Partners,2026-03-05 15:07,,,"13,380.00",0.00,0.00
+190405,190402,No,190402 -- 3) Prep Work (8 Sites),Buckeye Partners,2026-03-05 15:07,,,"8,563.00",1070.40,0.00
+190425,190425,Yes,BET-Brewerton : Ethanol Offload VFD Startup,Buckeye Partners,2026-03-06 11:00,,C1-278734,0.00,1672.50,0.00
+190426,190425,No,190425 -- 1) On Site Services,Buckeye Partners,2026-03-06 11:20,,,"6,690.00",1672.50,0.00
+190451,190451,Yes,PAR: Wyoming Site Survey for Terminal Upgrade,"Par Pacific Holdings, Inc.",2026-03-11 12:41,Mitch Loewen,4700021766,0.00,11550.00,1964.04
+190456,190451,No,190451 -- 1) Site Survey - On-site,"Par Pacific Holdings, Inc.",2026-03-11 13:00,,,"9,625.00",9625.00,1964.04
+190457,190451,No,190451 -- 2) Project Management,"Par Pacific Holdings, Inc.",2026-03-11 13:00,,,"1,925.00",1925.00,0.00
+190462,190462,Yes,XOM-Nashville: Seal pot Integration,ExxonMobil,2026-03-12 12:34,Jase Mayorga,4411444602,0.00,27029.86,0.00
+190463,190462,No,190462 -- 1) Design,ExxonMobil,2026-03-12 12:36,,,"8,032.50",8032.50,0.00
+190464,190462,No,190462 -- 2) Hardware,ExxonMobil,2026-03-12 12:36,,,"2,113.00",2113.00,0.00
+190465,190462,No,190462 -- 3) Remote Services,ExxonMobil,2026-03-12 12:36,,,"3,870.00",3870.00,0.00
+190466,190462,No,190462 -- 4) Programming and Commissioning,ExxonMobil,2026-03-12 12:37,,,"10,200.30",10200.30,0.00
+190467,190462,No,190462 -- 5) Project Management,ExxonMobil,2026-03-12 12:38,,,"2,814.06",2814.06,0.00
+190491,190491,Yes,BET-Cougar Site 1 and 2 Cutover Assistance,Buckeye Partners,2026-03-18 10:55,,,"42,525.20",0.00,0.00
+190492,190491,No,BET-Cougar Site 1 Cutover Assistance,Buckeye Partners,2026-03-18 10:57,,,0.00,5315.65,0.00
+190493,190491,No,190492 -- 1) Hardware Albany II,Buckeye Partners,2026-03-18 11:02,,,845.00,211.25,0.00
+190494,190491,No,190492 -- 2) Remote Services Albany II,Buckeye Partners,2026-03-18 11:03,,,"6,200.00",1550.00,0.00
+190495,190491,No,190492 -- 3) On Site Services Albany II,Buckeye Partners,2026-03-18 11:03,,,"12,030.00",3007.50,0.00
+190496,190491,No,190492 -- 4) Project Management Albany II,Buckeye Partners,2026-03-18 11:04,,,"2,187.60",546.90,0.00
+190506,190506,Yes,BET-Cougar Site 2 Cutover Assistance,Buckeye Partners,2026-03-18 11:20,,,0.00,5315.65,0.00
+190507,190506,No,190506 -- 1) Hardware Columbus GA,Buckeye Partners,2026-03-18 11:22,,,845.00,211.25,0.00
+190508,190506,No,190506 -- 2) Remote Services Columbus GA,Buckeye Partners,2026-03-18 11:22,,,"6,200.00",1550.00,0.00
+190509,190506,No,190506 -- 3) On Site Columbus GA,Buckeye Partners,2026-03-18 11:23,,,"12,030.00",3007.50,0.00
+190510,190506,No,190506 -- 4) Project Management Columbus GA,Buckeye Partners,2026-03-18 11:23,,,"2,187.60",546.90,0.00
+190531,190187,No,Design - Bid Set,tastechnical,2026-03-19 09:41,,,0.00,10780.00,0.00
+190532,190187,No,PM Services,tastechnical,2026-03-19 09:41,,,0.00,2730.00,0.00
+190538,190538,Yes,BET Lima South - Condensate Offload,Buckeye Partners,2026-03-20 09:56,,C1-279330,0.00,15897.03,1508.00
+190539,190538,No,190538 -- 1) Design,Buckeye Partners,2026-03-20 09:58,,,"9,800.00",2450.00,0.00
+190540,190538,No,190538 - 2) PLC & Other Hardware,Buckeye Partners,2026-03-20 09:59,,,"26,264.12",6566.03,1508.00
+190541,190538,No,190538 -- 3) Remote Programming,Buckeye Partners,2026-03-20 09:59,,,"8,525.00",2131.25,0.00
+190542,190538,No,190538 -- 4) Onsite,Buckeye Partners,2026-03-20 09:59,,,"16,050.00",4012.50,0.00
+190543,190538,No,190538 -- 5) Project Management,Buckeye Partners,2026-03-20 10:00,,,"2,949.00",737.25,0.00
+190561,190561,Yes,KM-Allsites: 2026 Additional Hardware,Kinder Morgan,2026-03-20 14:06,,,0.00,8289.40,6905.22
+190562,,No,KM-Allsites: 2026 HDS Small Project,Kinder Morgan,2026-03-20 14:06,,,0.00,0.00,0.00
+190563,,No,KM-Allsites: 2026 Engineering Small Projects,Kinder Morgan,2026-03-20 14:07,,,0.00,0.00,0.00
+190567,190567,Yes,BET-Omeaga Transformation : 2026 Sites,Buckeye Partners,2026-03-23 08:23,,,0.00,0.00,0.00
+190583,190583,Yes,XOM-San Antonio: Temporary VCU,ExxonMobil,2026-03-24 14:17,Sebastian Collazo,4411439672,0.00,15693.90,0.00
+190584,190583,No,190583 -- 00010 Line Item -- 1) Design,ExxonMobil,2026-03-24 14:23,,,"4,200.00",4200.00,0.00
+190585,190583,No,190583 -- 00010 Line Item -- 2) Remote Services,ExxonMobil,2026-03-24 14:23,,,"9,578.25",9578.25,0.00
+190586,190583,No,190583 -- 00010 Line Item -- 3) Project Management,ExxonMobil,2026-03-24 14:23,,,"1,915.65",1915.65,0.00
+190612,190612,Yes,CT: 2026 All Sites Support,Colonial Terminals,2026-03-27 10:12,Jeff Hunt,,0.00,3287.49,2706.98
+190613,190612,No,CT: 2026 HDS Support Calls - Paid by each call,Colonial Terminals,2026-03-27 10:14,,,0.00,0.00,0.00
+190614,190612,No,CT: 2026 HDS Small Projects,Colonial Terminals,2026-03-27 10:14,,,0.00,0.00,0.00
+190615,190612,No,CT: 2026 Engineering Small projects,Colonial Terminals,2026-03-27 10:14,,,0.00,0.00,0.00
+190616,190612,No,CT: 2026 Hardware Orders,Colonial Terminals,2026-03-27 10:16,,,0.00,3287.49,2706.98
+190623,190623,Yes,LIN: West Inman and Alexandria HMI Upgrade,Lincoln Terminal Company,2026-03-27 12:14,,,0.00,4070.00,89.77
+190665,190665,Yes,BET-River Rouge: South MCC PLC Upgrade,Buckeye Partners,2026-04-02 09:31,,C1-279879,0.00,4484.25,712.62
+190666,190665,No,190665 -- 1) PLC Upgrade Engineering,Buckeye Partners,2026-04-02 09:33,,,"12,034.00",3008.50,0.00
+190667,190665,No,190665 -- 2) PLC Material,Buckeye Partners,2026-04-02 09:33,,,"5,903.00",1475.75,712.62
+190698,190698,Yes,XOM-NZ Bluff : Ignition SCADA Conversion,ExxonMobil,2026-04-10 10:12,,Global Support PO,0.00,50998.68,0.00
+190699,190698,No,190698 -- 1) IGNITION SCADA SCREENS AND TAGS CONFIGURATIONS,ExxonMobil,2026-04-10 10:12,,,"27,375.00",27375.00,0.00
+190701,190698,No,190698 -- 2) COMMISSIONING SUPPORT AND FAT,ExxonMobil,2026-04-10 10:12,,,"19,846.00",19846.00,0.00
+190703,190698,No,190698 -- 3) PROJECT MANAGEMENT,ExxonMobil,2026-04-10 10:12,,,"3,777.68",3777.68,0.00
+190705,190705,Yes,BET-Yabucoa : Automatic tank gauging setup,Buckeye Partners,2026-04-10 11:29,,C1-280145,0.00,0.00,0.00
+190706,190705,No,190705 -- 1) Remote Services,Buckeye Partners,2026-04-10 11:32,,,"2,325.00",0.00,0.00
+190707,190705,No,190705 -- 2) Project Management,Buckeye Partners,2026-04-10 11:32,,,372.00,0.00,0.00
+190713,190713,Yes,CPT-Charlotte:  New Relay Panels for Lane 1 or 2,Colonial Pipeline Terminals,2026-04-13 13:08,,350528,0.00,5764.78,1835.28
+190714,190713,No,190713 -- 1) Design,Colonial Pipeline Terminals,2026-04-13 13:14,,,"1,980.00",0.00,0.00
+190715,190713,No,190713 -- 2) Hardware,Colonial Pipeline Terminals,2026-04-13 13:14,,,"5,764.78",5764.78,1835.28
+190716,190713,No,190713 -- 3) Programming and On Site Commissioning,Colonial Pipeline Terminals,2026-04-13 13:15,,,"6,900.00",0.00,0.00
+190726,190726,Yes,BET-East Chicago:  Lantronix Tank Data Migration,Buckeye Partners,2026-04-17 12:56,,C1-280517,0.00,0.00,0.00
+190727,190726,No,190726 -- 1) Remote Services,Buckeye Partners,2026-04-17 12:58,,,"3,100.00",0.00,0.00
+190728,190726,No,190726 -- 2) Project Management,Buckeye Partners,2026-04-17 12:58,,,465.00,0.00,0.00
+190734,189117,No,189117 -- 6) CO 1 Design,Buckeye Partners,2026-04-21 13:37,,,"1,700.00",850.00,0.00
+190735,189117,No,189117 -- 7) CO 1 Hardware Additional FCM,Buckeye Partners,2026-04-21 13:38,,,"3,378.22",1689.11,0.00
+190736,189117,No,189117 -- 8) CO 1 Programming/Startup,Buckeye Partners,2026-04-21 13:38,,,"2,670.00",1335.00,0.00
+190743,189530,No,189530 -- 6) CO103 Design,Buckeye Partners,2026-04-22 09:55,,,"2,760.00",690.00,0.00
+190744,189530,No,189530 -- 7) CO103 Hardware Additional FCM,Buckeye Partners,2026-04-22 09:55,,,"15,405.50",3851.38,0.00
+190745,189530,No,189530 -- 8) CO103 Programming/Startup,Buckeye Partners,2026-04-22 09:56,,,"2,670.00",0.00,0.00
+190765,190765,Yes,BET-Macon : ULSD tank change,Buckeye Partners,2026-04-24 09:54,,,0.00,0.00,0.00
+190768,190768,Yes,Par: Spokane: Diesel Raill Offload to Multiload/TMS,"Par Pacific Holdings, Inc.",2026-04-24 11:55,Nathan Althoff,4510695916,0.00,0.00,0.00
+190769,190768,No,190768 -- 1) Design,"Par Pacific Holdings, Inc.",2026-04-24 11:57,,,"4,200.00",0.00,0.00
+190770,190768,No,190768 -- 2) Programming Services,"Par Pacific Holdings, Inc.",2026-04-24 11:58,,,"2,128.50",0.00,0.00
+190771,190768,No,190768 -- 3) Porject Commissioning,"Par Pacific Holdings, Inc.",2026-04-24 11:58,,,"10,725.00",0.00,0.00
+190772,190768,No,190768 -- 4) Project Management,"Par Pacific Holdings, Inc.",2026-04-24 11:58,,,"2,570.70",0.00,0.00

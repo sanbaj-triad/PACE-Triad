@@ -1,0 +1,5 @@
+node_modules/
+.venv/
+.git/
+NotebookLM_Documentation/
+__pycache__/

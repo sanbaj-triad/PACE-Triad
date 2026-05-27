@@ -1,0 +1,4 @@
+name,email,phone,address,title,payment_terms
+Global Corp,contact@globalcorp.com,555-0100,"123 Business Rd, NY",Account Manager,30
+Acme Industries,billing@acme.com,555-0101,"456 Tech Park, CA",VP of Ops,15
+Triad Regional,,,,"",45
