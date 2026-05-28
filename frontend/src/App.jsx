@@ -104,17 +104,12 @@ const AdminRoute = ({ children }) => {
 // };
 
 const IndexRoute = () => {
-  const { user } = useAuth();
-  // If they are a standard employee, send them straight to their own tasks/analytics!
-  if (user && !hasFinancialAccess(user)) return <Navigate to="/portal/my-analytics" replace />;
   return <Navigate to="/portal/dashboard" replace />;
 };
 
 /* ADDED THE REDIRECT COMPONENT HELPER FUNCTION HERE */
 // This for the role based dashboard. If they are a standard employee, send them to my-analytics. If they have financial access, send them to the main dashboard.
 const DashboardRedirectWrapper = () => {
-  const { user } = useAuth();
-  if (user && !hasFinancialAccess(user)) return <Navigate to="/portal/my-analytics" replace />;
   return <Navigate to="/portal/dashboard" replace />;
 };
 
@@ -206,7 +201,7 @@ function AppRoutes() {
         <Route path="messages" element={<Messages />} />
         {/* <Route path="portal/dashboard" element={<Dashboard />} /> */}
         {/* This is the fix for dashboard access based on roles. */}
-        <Route path="portal/dashboard" element={<AdminRoute><Dashboard /></AdminRoute>} />
+        <Route path="portal/dashboard" element={<Dashboard />} />
         <Route path="portal/my-analytics" element={<MyAnalytics />} />
 
         {/* <Route path="dashboard" element={<Navigate to="/portal/dashboard" replace />} /> */}

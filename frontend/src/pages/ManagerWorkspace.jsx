@@ -15,6 +15,7 @@ const ManagerWorkspace = () => {
     const [team, setTeam] = useState([]);
     const [projects, setProjects] = useState([]);
     const [milestones, setMilestones] = useState([]);
+    const [ptoRequests, setPtoRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -32,6 +33,13 @@ const ManagerWorkspace = () => {
 
                 setRawData({ users: usersData || [], projects: projectsData || [], milestones: milestonesData || [] });
                 setActiveUsers(activeUsersData || []);
+
+                const ptoStatuses = ['Pending'];
+                if (user?.has_financial_access) ptoStatuses.push('Manager Approved');
+                const ptoData = await Promise.all(
+                    ptoStatuses.map(s => api.get(`/pto/requests?status=${encodeURIComponent(s)}`))
+                );
+                setPtoRequests(ptoData.flat());
 
             } catch (err) {
                 console.error("Failed to load workspace data", err);
@@ -81,8 +89,29 @@ const ManagerWorkspace = () => {
 
     }, [viewMode, rawData, user]);
 
+    const handlePTOAction = async (requestId, newStatus) => {
+        const labels = { 'Manager Approved': 'Approve', 'Finance Approved': 'Finance Approve', 'Rejected': 'Reject' };
+        if (!window.confirm(`${labels[newStatus] || newStatus} this PTO request?`)) return;
+        try {
+            await api.put(`/pto/requests/${requestId}/status`, { status: newStatus });
+            const ptoStatuses = ['Pending'];
+            if (user?.has_financial_access) ptoStatuses.push('Manager Approved');
+            const ptoData = await Promise.all(
+                ptoStatuses.map(s => api.get(`/pto/requests?status=${encodeURIComponent(s)}`))
+            );
+            setPtoRequests(ptoData.flat());
+        } catch (err) {
+            alert(`Error: ${err.message}`);
+        }
+    };
+
     if (loading) return <div style={{ padding: '2rem' }}>Loading Workspace...</div>;
     if (error) return <div style={{ padding: '2rem', color: 'var(--error)' }}>{error}</div>;
+
+    const directReportIds = new Set(rawData.users.filter(u => u.manager_id === user.id).map(u => u.id));
+    const visiblePtoRequests = ptoRequests.filter(r =>
+        r.status === 'Pending' ? directReportIds.has(r.user_id) : true
+    );
 
     return (
         <div className="dashboard-container">
@@ -214,6 +243,100 @@ const ManagerWorkspace = () => {
                     </div>
                 )}
             </div>
+            )}
+
+            {/* Pending PTO Requests */}
+            {visiblePtoRequests.length > 0 && (
+                <div className="card" style={{ marginBottom: '2rem' }}>
+                    <h3 style={{ borderBottom: '1px solid var(--border)', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+                        Pending PTO Requests
+                        <span style={{ marginLeft: '0.5rem', background: 'rgba(239,68,68,0.1)', color: '#ef4444', borderRadius: '12px', padding: '0.1rem 0.5rem', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                            {visiblePtoRequests.length}
+                        </span>
+                    </h3>
+                    <div style={{ overflowX: 'auto' }}>
+                        <table className="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Employee</th>
+                                    <th>Dates</th>
+                                    <th>Hours</th>
+                                    <th>Notes</th>
+                                    <th>Status</th>
+                                    <th style={{ textAlign: 'center' }}>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {visiblePtoRequests.map(r => {
+                                    const emp = rawData.users.find(u => u.id === r.user_id);
+                                    const empName = emp
+                                        ? `${emp.first_name || ''} ${emp.last_name || ''}`.trim() || emp.username
+                                        : `User #${r.user_id}`;
+                                    const isPending = r.status === 'Pending';
+                                    return (
+                                        <tr key={r.id}>
+                                            <td className="font-medium">{empName}</td>
+                                            <td style={{ whiteSpace: 'nowrap' }}>
+                                                {new Date(r.start_date).toLocaleDateString()} – {new Date(r.end_date).toLocaleDateString()}
+                                            </td>
+                                            <td>{r.hours_requested}h</td>
+                                            <td style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>{r.notes || '—'}</td>
+                                            <td>
+                                                <span style={{
+                                                    padding: '0.25rem 0.5rem',
+                                                    background: isPending ? 'rgba(56,189,248,0.1)' : 'rgba(251,191,36,0.1)',
+                                                    color: isPending ? '#38bdf8' : '#fbbf24',
+                                                    borderRadius: '4px', fontSize: '0.85rem', fontWeight: 'bold'
+                                                }}>
+                                                    {r.status}
+                                                </span>
+                                            </td>
+                                            <td style={{ textAlign: 'center' }}>
+                                                {isPending ? (
+                                                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+                                                        <button
+                                                            onClick={() => handlePTOAction(r.id, 'Manager Approved')}
+                                                            className="btn-primary"
+                                                            style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem', background: '#22c55e', borderColor: '#22c55e' }}
+                                                        >
+                                                            Approve
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handlePTOAction(r.id, 'Rejected')}
+                                                            className="btn-secondary"
+                                                            style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem', color: '#ef4444', borderColor: '#ef4444' }}
+                                                        >
+                                                            Reject
+                                                        </button>
+                                                    </div>
+                                                ) : user?.has_financial_access ? (
+                                                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
+                                                        <button
+                                                            onClick={() => handlePTOAction(r.id, 'Finance Approved')}
+                                                            className="btn-primary"
+                                                            style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem', background: '#10b981', borderColor: '#10b981' }}
+                                                        >
+                                                            Finance Approve
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handlePTOAction(r.id, 'Rejected')}
+                                                            className="btn-secondary"
+                                                            style={{ padding: '0.4rem 0.8rem', fontSize: '0.85rem', color: '#ef4444', borderColor: '#ef4444' }}
+                                                        >
+                                                            Reject
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Awaiting Finance</span>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             )}
 
             {/* My Projects */}
