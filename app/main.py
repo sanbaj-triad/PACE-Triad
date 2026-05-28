@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, File, UploadFile, WebSocket, WebSocketDisconnect, Form
+from fastapi import FastAPI, Depends, HTTPException, File, UploadFile, WebSocket, WebSocketDisconnect, Form, Query, Request
 from google.cloud import storage
 from fastapi.responses import StreamingResponse
 import io
@@ -18,6 +18,12 @@ from fastapi import BackgroundTasks
 import os
 import shutil
 from fastapi.responses import FileResponse
+from .config import settings
+import uuid
+import time
+from .logger import get_logger, request_id_var, mask_email, mask_sensitive
+
+logger = get_logger("app.main")
 
 UPLOAD_DIR = "attachments"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -33,18 +39,44 @@ from fastapi.responses import JSONResponse
 import traceback
 
 @app.middleware("http")
-async def maintenance_mode_middleware(request: Request, call_next):
+async def logging_middleware(request: Request, call_next):
+    # Retrieve request ID or generate one
+    request_id = request.headers.get("X-Request-ID", str(uuid.uuid4())[:8])
+    token = request_id_var.set(request_id)
+    
+    start_time = time.time()
+    
+    # Process maintenance mode
     if os.environ.get("MAINTENANCE_MODE", "false").lower() == "true":
-        # Do not block health checks used by Google Cloud or Docker
-        if request.url.path == "/health":
-            return await call_next(request)
-        return JSONResponse(status_code=503, content={"detail": "MAINTENANCE_MODE"})
-    return await call_next(request)
-
-
+        if request.url.path != "/health":
+            duration = (time.time() - start_time) * 1000
+            logger.warning(f"Maintenance mode active: blocked {request.method} {request.url.path}")
+            request_id_var.reset(token)
+            return JSONResponse(status_code=503, content={"detail": "MAINTENANCE_MODE"})
+            
+    response = None
+    try:
+        response = await call_next(request)
+        return response
+    except Exception as exc:
+        duration = (time.time() - start_time) * 1000
+        logger.error(
+            f"Request failed: {request.method} {request.url.path} | Error: {str(exc)} | Duration: {duration:.2f}ms",
+            exc_info=True
+        )
+        raise exc
+    finally:
+        duration = (time.time() - start_time) * 1000
+        user_id = getattr(request.state, "user_id", "-")
+        status_code = response.status_code if response else 500
+        logger.info(
+            f"Request: {request.method} {request.url.path} | User: {user_id} | Status: {status_code} | Duration: {duration:.2f}ms"
+        )
+        request_id_var.reset(token)
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
+    logger.error(f"Uncaught Exception: {str(exc)}", exc_info=True)
     return JSONResponse(
         status_code=500,
         content={"detail": str(exc), "traceback": traceback.format_exc()}
@@ -136,16 +168,13 @@ class LoginResponse(BaseModel):
     force_reset: Optional[bool] = False
 
 @app.post("/token", response_model=LoginResponse)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    print(f"DEBUG /token: login for user: '{form_data.username}', pw: '{form_data.password}' (len {len(form_data.password)})", flush=True)
+async def login_for_access_token(request: Request, form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    ip_addr = request.client.host if request.client else "unknown"
+    masked_username = mask_email(form_data.username) if "@" in form_data.username else form_data.username
     user = crud.get_user_by_username(db, username=form_data.username)
-    if user:
-        print(f"DEBUG /token: User found in DB. Verifying password...", flush=True)
-    else:
-        print(f"DEBUG /token: User NOT FOUND in DB.", flush=True)
 
     if not user or not auth.verify_password(form_data.password, user.hashed_password):
-        print(f"DEBUG /token: Auth failed for {form_data.username}", flush=True)
+        logger.warning(f"LOGIN FAILED: username={masked_username}, ip={ip_addr}, reason=Incorrect username or password")
         raise HTTPException(
             status_code=401,
             detail="Incorrect username or password",
@@ -153,12 +182,14 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         )
         
     if not getattr(user, 'is_active', True) or getattr(user, 'locked_out', False):
+        logger.warning(f"LOGIN FAILED: username={masked_username}, ip={ip_addr}, reason=Disabled or locked out")
         raise HTTPException(
             status_code=403,
             detail="Account is disabled or locked out. Please contact your system administrator.",
         )
         
     if not getattr(user, 'login_enabled', True):
+        logger.warning(f"LOGIN FAILED: username={masked_username}, ip={ip_addr}, reason=Login disabled")
         raise HTTPException(
             status_code=403,
             detail="Login is currently disabled for this record. Contact an administrator to enable system access.",
@@ -168,6 +199,8 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     user.last_login = datetime.utcnow()
     user.login_count = (user.login_count or 0) + 1
     db.commit()
+    
+    logger.info(f"LOGIN SUCCESS: user_id={user.id}, username={masked_username}, ip={ip_addr}")
     
     access_token_expires = timedelta(minutes=auth.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = auth.create_access_token(
@@ -203,6 +236,7 @@ def login_microsoft(request: Request):
 async def callback_microsoft(code: str, request: Request, db: Session = Depends(get_db)):
     base_domain = os.environ.get("SSO_DOMAIN", "https://pace-frontend-611176160748.us-east4.run.app")
     redirect_uri = f"{base_domain}/auth/callback/microsoft"
+    ip_addr = request.client.host if request.client else "unknown"
         
     token_url = f"https://login.microsoftonline.com/{AZURE_TENANT_ID}/oauth2/v2.0/token"
     
@@ -216,6 +250,7 @@ async def callback_microsoft(code: str, request: Request, db: Session = Depends(
         })
         
         if res.status_code != 200:
+            logger.warning(f"LOGIN FAILED: method=microsoft_sso, ip={ip_addr}, reason=Failed to acquire token from Microsoft")
             raise HTTPException(status_code=400, detail="Failed to acquire token from Microsoft")
             
         access_token = res.json().get("access_token")
@@ -226,25 +261,31 @@ async def callback_microsoft(code: str, request: Request, db: Session = Depends(
         })
         
         if graph_res.status_code != 200:
+            logger.warning(f"LOGIN FAILED: method=microsoft_sso, ip={ip_addr}, reason=Failed to acquire profile from Microsoft Graph")
             raise HTTPException(status_code=400, detail="Failed to acquire profile from Microsoft Graph")
             
         profile = graph_res.json()
         email = profile.get("mail") or profile.get("userPrincipalName")
         
         if not email:
+            logger.warning(f"LOGIN FAILED: method=microsoft_sso, ip={ip_addr}, reason=Microsoft account does not have a primary email")
             raise HTTPException(status_code=400, detail="Microsoft account does not have a primary email")
             
         # Verify against internal DB
         user = db.query(models.User).filter(func.lower(models.User.email) == email.lower()).first()
         if not user:
+            logger.warning(f"LOGIN FAILED: method=microsoft_sso, email={mask_email(email)}, ip={ip_addr}, reason=User is not registered in PACE")
             raise HTTPException(status_code=403, detail=f"User {email} is not registered in PACE")
             
         if not getattr(user, 'is_active', True) or getattr(user, 'locked_out', False):
+            logger.warning(f"LOGIN FAILED: method=microsoft_sso, email={mask_email(email)}, ip={ip_addr}, reason=Disabled or locked out")
             raise HTTPException(status_code=403, detail="Account is disabled or locked out.")
             
         user.last_login = datetime.utcnow()
         user.login_count = (user.login_count or 0) + 1
         db.commit()
+        
+        logger.info(f"LOGIN SUCCESS: method=microsoft_sso, user_id={user.id}, email={mask_email(user.email)}, ip={ip_addr}")
         
         # Create standard PACE JWT
         access_token_expires = timedelta(minutes=auth.ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -261,17 +302,20 @@ async def callback_microsoft(code: str, request: Request, db: Session = Depends(
 
 from fastapi import Body
 @app.post("/auth/microsoft/mobile-exchange")
-async def mobile_microsoft_exchange(access_token: str = Body(..., embed=True), db: Session = Depends(get_db)):
+async def mobile_microsoft_exchange(request: Request, access_token: str = Body(..., embed=True), db: Session = Depends(get_db)):
+    ip_addr = request.client.host if request.client else "unknown"
     headers = {"Authorization": f"Bearer {access_token}"}
     async with httpx.AsyncClient() as client:
         profile_res = await client.get("https://graph.microsoft.com/v1.0/me", headers=headers)
         if profile_res.status_code != 200:
+            logger.warning(f"LOGIN FAILED: method=microsoft_mobile, ip={ip_addr}, reason=Invalid Microsoft Token")
             raise HTTPException(status_code=401, detail="Invalid Microsoft Token")
             
         profile = profile_res.json()
         email = profile.get("mail") or profile.get("userPrincipalName")
         
         if not email:
+            logger.warning(f"LOGIN FAILED: method=microsoft_mobile, ip={ip_addr}, reason=Could not extract email from Microsoft profile")
             raise HTTPException(status_code=400, detail="Could not extract email from Microsoft profile")
             
     user = db.query(models.User).filter(func.lower(models.User.email) == email.lower()).first()
@@ -286,13 +330,16 @@ async def mobile_microsoft_exchange(access_token: str = Body(..., embed=True), d
                 role="user"
             )
             user = crud.create_user(db, new_user_data)
+            logger.info(f"USER AUTO-CREATED via SSO: user_id={user.id}, email={mask_email(user.email)}")
         else:
+            logger.warning(f"LOGIN FAILED: method=microsoft_mobile, email={mask_email(email)}, ip={ip_addr}, reason=Not strictly registered in TriadSys O365 Tenant")
             raise HTTPException(status_code=403, detail="User not strictly registered in TriadSys O365 Tenant")
             
     access_token_expires = timedelta(minutes=auth.ACCESS_TOKEN_EXPIRE_MINUTES)
     pace_token = auth.create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
+    logger.info(f"LOGIN SUCCESS: method=microsoft_mobile, user_id={user.id}, email={mask_email(user.email)}, ip={ip_addr}")
     return {"access_token": pace_token, "token_type": "bearer", "user": user}
 
 class ForgotPasswordRequest(BaseModel):
@@ -515,6 +562,10 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db), current
     db_user = crud.get_user_by_username(db, username=user.username)
     if db_user:
         raise HTTPException(status_code=400, detail="Username already registered")
+    if user.email:
+        db_email = db.query(models.User).filter(models.User.email == user.email).first()
+        if db_email:
+            raise HTTPException(status_code=400, detail="Email already registered")
     return crud.create_user(db=db, user=user, current_user=current_user)
 
 @app.get("/users/me", response_model=schemas.User)
@@ -867,6 +918,10 @@ def delete_location(location_id: int, db: Session = Depends(get_db), current_use
 # --- Project Endpoints ---
 @app.post("/projects/", response_model=schemas.Project)
 def create_project(project: schemas.ProjectCreate, db: Session = Depends(get_db), current_user: models.User = Depends(dependencies.get_current_active_user)):
+    if project.project_unique_id:
+        existing = db.query(models.Project).filter(models.Project.project_unique_id == project.project_unique_id).first()
+        if existing:
+            raise HTTPException(status_code=400, detail="Project ID already in use")
     db_proj = crud.create_project(db=db, project=project, current_user=current_user)
     
     from . import teams
@@ -971,13 +1026,15 @@ def get_project_report_pdf(project_id: int, db: Session = Depends(get_db)):
     )
 
 @app.post("/projects/{project_id}/upload-po")
-async def upload_project_po(project_id: int, file: UploadFile = File(...), db: Session = Depends(get_db)):
+async def upload_project_po(project_id: int, file: UploadFile = File(...), db: Session = Depends(get_db), current_user: models.User = Depends(dependencies.get_current_active_user)):
     project = crud.get_project(db, project_id=project_id)
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
 
-    # Sanitize and save file
-    # file_ext = os.path.splitext(file.filename)[1]
+    ext = os.path.splitext(file.filename)[1].lower()
+    if ext not in ['.pdf', '.jpg', '.jpeg', '.png']:
+        raise HTTPException(status_code=400, detail="Only PDF and image files are allowed.")
+
     filename = f"po_{project_id}_{int(datetime.utcnow().timestamp())}.pdf" # Force PDF extension or keep original? Assuming PDF for now or allowing any.
     file_path = f"app/static/uploads/{filename}"
     
@@ -998,26 +1055,42 @@ async def create_project_attachment(
     project_id: int, 
     file: UploadFile = File(...), 
     description: Optional[str] = Form(None),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(dependencies.get_current_active_user)
 ):
     project = crud.get_project(db, project_id=project_id)
     if not project:
         raise HTTPException(status_code=404, detail="Project not found")
 
-    filename = f"po_att_{project_id}_{int(datetime.utcnow().timestamp())}_{file.filename}"
+    clean_filename = os.path.basename(file.filename)
+    ext = os.path.splitext(clean_filename)[1].lower()
+    if ext not in ['.pdf', '.png', '.jpg', '.jpeg', '.doc', '.docx', '.xls', '.xlsx', '.csv', '.txt', '.zip']:
+        raise HTTPException(status_code=400, detail="File type not allowed.")
+
+    filename = f"po_att_{project_id}_{int(datetime.utcnow().timestamp())}_{clean_filename}"
     
-    # Upload to GCS
-    storage_client = storage.Client()
-    bucket_name = getattr(settings, 'gcs_attachment_bucket', 'pace-app-attachments')
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(f"projects/{project_id}/{filename}")
-    
-    file.file.seek(0)
-    blob.upload_from_file(file.file, content_type=file.content_type)
+    start_time = time.time()
+    try:
+        # Upload to GCS
+        storage_client = storage.Client()
+        bucket_name = getattr(settings, 'gcs_attachment_bucket', 'pace-app-attachments')
+        bucket = storage_client.bucket(bucket_name)
+        blob = bucket.blob(f"projects/{project_id}/{filename}")
+        
+        file.file.seek(0)
+        blob.upload_from_file(file.file, content_type=file.content_type)
+        duration_ms = (time.time() - start_time) * 1000
+        logger.info(f"GCS: operation=upload, filename={filename}, success=True, duration_ms={duration_ms:.2f}")
+    except Exception as e:
+        duration_ms = (time.time() - start_time) * 1000
+        logger.error(
+            f"GCS: operation=upload, filename={filename}, success=False, duration_ms={duration_ms:.2f} | Error: {str(e)}"
+        )
+        raise HTTPException(status_code=500, detail=f"Failed to upload attachment to storage: {str(e)}")
     
     attachment = models.ProjectAttachment(
         project_id=project_id,
-        filename=file.filename,
+        filename=clean_filename,
         file_path=blob.name,
         description=description
     )
@@ -1029,7 +1102,7 @@ async def create_project_attachment(
 
 
 @app.delete("/projects/attachments/{attachment_id}")
-def delete_project_attachment(attachment_id: int, db: Session = Depends(get_db)):
+def delete_project_attachment(attachment_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(dependencies.get_current_active_user)):
     att = db.query(models.ProjectAttachment).filter(models.ProjectAttachment.id == attachment_id).first()
     if not att:
         raise HTTPException(status_code=404, detail="Attachment not found")
@@ -1049,6 +1122,7 @@ def download_project_attachment(attachment_id: int, db: Session = Depends(get_db
     if not attachment:
         raise HTTPException(status_code=404, detail="Attachment not found")
         
+    start_time = time.time()
     try:
         storage_client = storage.Client()
         bucket_name = getattr(settings, 'gcs_attachment_bucket', 'pace-app-attachments')
@@ -1056,6 +1130,8 @@ def download_project_attachment(attachment_id: int, db: Session = Depends(get_db
         blob = bucket.blob(attachment.file_path)
         
         file_bytes = blob.download_as_bytes()
+        duration_ms = (time.time() - start_time) * 1000
+        logger.info(f"GCS: operation=download, filename={attachment.file_path}, success=True, duration_ms={duration_ms:.2f}")
         
         return StreamingResponse(
             io.BytesIO(file_bytes),
@@ -1063,6 +1139,10 @@ def download_project_attachment(attachment_id: int, db: Session = Depends(get_db
             headers={"Content-Disposition": f"attachment; filename={attachment.filename}"}
         )
     except Exception as e:
+        duration_ms = (time.time() - start_time) * 1000
+        logger.error(
+            f"GCS: operation=download, filename={attachment.file_path}, success=False, duration_ms={duration_ms:.2f} | Error: {str(e)}"
+        )
         raise HTTPException(status_code=404, detail=f"File not found on cloud storage: {str(e)}")
 
 
@@ -1161,7 +1241,7 @@ def refresh_invoice_from_xero(invoice_id: int, db: Session = Depends(get_db)):
     return {"message": f"Invoice {invoice.invoice_number} refreshed", "amount_paid": invoice.amount_paid, "status": invoice.status}
 
 @app.post("/invoices/{invoice_id}/payments")
-def record_invoice_payment(invoice_id: int, payment: schemas.XeroPaymentPush, db: Session = Depends(get_db)):
+def record_invoice_payment(invoice_id: int, payment: schemas.XeroPaymentPush, db: Session = Depends(get_db), current_user: models.User = Depends(dependencies.get_current_active_user)):
     invoice = crud.get_invoice(db, invoice_id=invoice_id)
     if not invoice or not invoice.xero_id:
         raise HTTPException(status_code=400, detail="Invoice not found or not synced to Xero.")
@@ -1182,6 +1262,9 @@ def record_invoice_payment(invoice_id: int, payment: schemas.XeroPaymentPush, db
 
 @app.post("/invoices/{invoice_id}/payments/", response_model=schemas.InvoicePayment)
 def create_local_invoice_payment(invoice_id: int, payment: schemas.InvoicePaymentCreate, db: Session = Depends(get_db), current_user: models.User = Depends(dependencies.get_current_active_user)):
+    invoice = db.query(models.Invoice).filter(models.Invoice.id == invoice_id).first()
+    if not invoice:
+        raise HTTPException(status_code=404, detail="Invoice not found")
     return crud.create_invoice_payment(db=db, payment=payment, invoice_id=invoice_id, current_user=current_user)
 
 @app.get("/xero/api/bank-accounts")
@@ -1231,7 +1314,11 @@ def get_invoice_pdf(invoice_id: int, db: Session = Depends(get_db)):
     invoice = crud.get_invoice(db, invoice_id=invoice_id)
     if not invoice:
         raise HTTPException(status_code=404, detail="Invoice not found")
-    
+    if not invoice.project:
+        raise HTTPException(status_code=400, detail="Invoice is not associated with a project")
+    if not invoice.project.customer:
+        raise HTTPException(status_code=400, detail="Invoice project is not associated with a customer")
+        
     pdf_bytes = generate_invoice_pdf(invoice, invoice.project.customer, invoice.project, invoice.items)
     
     if not pdf_bytes:
@@ -1362,7 +1449,10 @@ def convert_lead_to_milestone_endpoint(lead_id: int, request: schemas.LeadToMile
 
 
 @app.post("/invoices/{invoice_id}/items/", response_model=schemas.LineItem)
-def create_invoice_item(invoice_id: int, item: schemas.LineItemCreate, db: Session = Depends(get_db)):
+def create_invoice_item(invoice_id: int, item: schemas.LineItemCreate, db: Session = Depends(get_db), current_user: models.User = Depends(dependencies.get_current_active_user)):
+    invoice = db.query(models.Invoice).filter(models.Invoice.id == invoice_id).first()
+    if not invoice:
+        raise HTTPException(status_code=404, detail="Invoice not found")
     return crud.create_line_item(db=db, item=item, invoice_id=invoice_id)
 
 @app.get("/invoices/{invoice_id}/items/", response_model=List[schemas.LineItem])
@@ -1376,6 +1466,9 @@ def read_invoice_payments(invoice_id: int, db: Session = Depends(get_db)):
 
 @app.post("/invoices/{invoice_id}/payments/", response_model=schemas.InvoicePayment)
 def create_invoice_payment(invoice_id: int, payment: schemas.InvoicePaymentCreate, db: Session = Depends(get_db), current_user: models.User = Depends(dependencies.get_current_active_user)):
+    invoice = db.query(models.Invoice).filter(models.Invoice.id == invoice_id).first()
+    if not invoice:
+        raise HTTPException(status_code=404, detail="Invoice not found")
     return crud.create_invoice_payment(db=db, payment=payment, invoice_id=invoice_id, current_user=current_user)
 
 @app.delete("/invoices/{invoice_id}/payments/{payment_id}")
@@ -1388,6 +1481,9 @@ def delete_invoice_payment(invoice_id: int, payment_id: int, db: Session = Depen
 # --- Milestone Endpoints ---
 @app.post("/projects/{project_id}/milestones/", response_model=schemas.Milestone)
 def create_project_milestone(project_id: int, milestone: schemas.MilestoneCreate, db: Session = Depends(get_db), current_user: models.User = Depends(dependencies.get_current_active_user)):
+    project = db.query(models.Project).filter(models.Project.id == project_id).first()
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
     return crud.create_milestone(db=db, milestone=milestone, project_id=project_id, current_user=current_user)
 
 @app.get("/projects/{project_id}/milestones/", response_model=List[schemas.Milestone])
@@ -1538,7 +1634,7 @@ def clone_milestone(milestone_id: int, db: Session = Depends(get_db), current_us
     return cloned_milestone
 
 @app.put("/line-items/{item_id}", response_model=schemas.LineItem)
-def update_line_item(item_id: int, item: schemas.LineItemUpdate, db: Session = Depends(get_db)):
+def update_line_item(item_id: int, item: schemas.LineItemUpdate, db: Session = Depends(get_db), current_user: models.User = Depends(dependencies.get_current_active_user)):
     updated = crud.update_line_item(db, item_id, item)
     if not updated:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -1560,7 +1656,7 @@ from fastapi import Request
 import hmac
 import hashlib
 import base64
-from .config import settings
+# settings imported at top
 
 @app.post("/xero/webhook")
 async def xero_webhook(request: Request, db: Session = Depends(get_db)):
@@ -1703,6 +1799,10 @@ async def send_invoice(id: int, email_request: EmailRequest, current_user: schem
     invoice = crud.get_invoice(db, invoice_id=id)
     if not invoice:
         raise HTTPException(status_code=404, detail="Invoice not found")
+    if not invoice.project:
+        raise HTTPException(status_code=400, detail="Invoice is not associated with a project")
+    if not invoice.project.customer:
+        raise HTTPException(status_code=400, detail="Invoice project is not associated with a customer")
 
     # Generate PDF
     html_content = generate_invoice_pdf(invoice, invoice.project.customer, invoice.project, invoice.items)
@@ -1791,6 +1891,10 @@ def get_invoice_pdf_download(id: int, db: Session = Depends(get_db)):
     invoice = crud.get_invoice(db, invoice_id=id)
     if not invoice:
         raise HTTPException(status_code=404, detail="Invoice not found")
+    if not invoice.project:
+        raise HTTPException(status_code=400, detail="Invoice is not associated with a project")
+    if not invoice.project.customer:
+        raise HTTPException(status_code=400, detail="Invoice project is not associated with a customer")
 
     # Generate PDF HTML
     html_content = generate_invoice_pdf(invoice, invoice.project.customer, invoice.project, invoice.items)
@@ -2075,14 +2179,15 @@ def read_task_events(
     return crud.get_task_events(db, current_user, start_date, end_date, user_id)
 
 @app.post("/sync/task-events/")
-def sync_offline_task_events(events: List[schemas.TaskEventCreate], db: Session = Depends(get_db)):
+def sync_offline_task_events(
+    events: List[schemas.TaskEventCreate],
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(dependencies.get_current_active_user)
+):
     synced = []
     for ev in events:
         try:
-            db_event = models.TaskEvent(**ev.model_dump())
-            db.add(db_event)
-            db.commit()
-            db.refresh(db_event)
+            db_event = crud.create_task_event(db, ev.task_id, ev, current_user)
             synced.append(db_event.id)
         except Exception:
             db.rollback()
@@ -2794,14 +2899,24 @@ async def upload_expense_attachment(expense_id: int, file: UploadFile = File(...
         
     unique_filename = f"exp_{expense_id}_{int(datetime.utcnow().timestamp())}_{file.filename}"
     
-    # Upload to GCS
-    storage_client = storage.Client()
-    bucket_name = getattr(settings, 'gcs_attachment_bucket', 'pace-app-attachments')
-    bucket = storage_client.bucket(bucket_name)
-    blob = bucket.blob(f"expenses/{expense_id}/{unique_filename}")
-    
-    file.file.seek(0)
-    blob.upload_from_file(file.file, content_type=file.content_type)
+    start_time = time.time()
+    try:
+        # Upload to GCS
+        storage_client = storage.Client()
+        bucket_name = getattr(settings, 'gcs_attachment_bucket', 'pace-app-attachments')
+        bucket = storage_client.bucket(bucket_name)
+        blob = bucket.blob(f"expenses/{expense_id}/{unique_filename}")
+        
+        file.file.seek(0)
+        blob.upload_from_file(file.file, content_type=file.content_type)
+        duration_ms = (time.time() - start_time) * 1000
+        logger.info(f"GCS: operation=upload, filename={unique_filename}, success=True, duration_ms={duration_ms:.2f}")
+    except Exception as e:
+        duration_ms = (time.time() - start_time) * 1000
+        logger.error(
+            f"GCS: operation=upload, filename={unique_filename}, success=False, duration_ms={duration_ms:.2f} | Error: {str(e)}"
+        )
+        raise HTTPException(status_code=500, detail=f"Failed to upload attachment to storage: {str(e)}")
         
     return crud.create_expense_attachment(db, expense_id=expense_id, filename=file.filename, file_path=blob.name)
 
@@ -2815,14 +2930,20 @@ def delete_attachment(attachment_id: int, db: Session = Depends(get_db), current
     if expense and current_user.role not in ['admin', 'manager'] and expense.user_id != current_user.id:
         raise HTTPException(status_code=403, detail="Not authorized to delete this attachment")
     
+    start_time = time.time()
     try:
         storage_client = storage.Client()
         bucket_name = getattr(settings, 'gcs_attachment_bucket', 'pace-app-attachments')
         bucket = storage_client.bucket(bucket_name)
         blob = bucket.blob(attachment.file_path)
         blob.delete()
+        duration_ms = (time.time() - start_time) * 1000
+        logger.info(f"GCS: operation=delete, filename={attachment.file_path}, success=True, duration_ms={duration_ms:.2f}")
     except Exception as e:
-        print(f"Error deleting expense attachment from GCS: {e}")
+        duration_ms = (time.time() - start_time) * 1000
+        logger.error(
+            f"GCS: operation=delete, filename={attachment.file_path}, success=False, duration_ms={duration_ms:.2f} | Error: {str(e)}"
+        )
             
     crud.delete_expense_attachment(db, attachment_id)
     return {"detail": "Attachment deleted successfully"}
@@ -2833,6 +2954,7 @@ def download_attachment(attachment_id: int, db: Session = Depends(get_db)):
     if not attachment:
         raise HTTPException(status_code=404, detail="Attachment not found")
         
+    start_time = time.time()
     try:
         storage_client = storage.Client()
         bucket_name = getattr(settings, 'gcs_attachment_bucket', 'pace-app-attachments')
@@ -2840,6 +2962,8 @@ def download_attachment(attachment_id: int, db: Session = Depends(get_db)):
         blob = bucket.blob(attachment.file_path)
         
         file_bytes = blob.download_as_bytes()
+        duration_ms = (time.time() - start_time) * 1000
+        logger.info(f"GCS: operation=download, filename={attachment.file_path}, success=True, duration_ms={duration_ms:.2f}")
         
         return StreamingResponse(
             io.BytesIO(file_bytes),
@@ -2847,6 +2971,10 @@ def download_attachment(attachment_id: int, db: Session = Depends(get_db)):
             headers={"Content-Disposition": f"attachment; filename={attachment.filename}"}
         )
     except Exception as e:
+        duration_ms = (time.time() - start_time) * 1000
+        logger.error(
+            f"GCS: operation=download, filename={attachment.file_path}, success=False, duration_ms={duration_ms:.2f} | Error: {str(e)}"
+        )
         raise HTTPException(status_code=404, detail=f"File not found on cloud storage: {str(e)}")
 
 # --- WebSocket & Presence Manager ---
@@ -2997,22 +3125,54 @@ manager = ConnectionManager()
 # so we handle it gracefully.
 
 @app.websocket("/ws/notifications/{user_id}")
-async def websocket_endpoint(websocket: WebSocket, user_id: int):
-    # Retrieve DB session manually for WebSocket context safely
-    db = SessionLocal()
-    await manager.connect(websocket, user_id, db)
+async def websocket_endpoint(websocket: WebSocket, user_id: int, token: Optional[str] = Query(None)):
+    ip_addr = websocket.client.host if websocket.client else "unknown"
+    if not token:
+        logger.warning(f"WS AUTH FAILED: user_id={user_id}, ip={ip_addr}, reason=Missing token")
+        await websocket.close(code=1008)
+        return
     try:
-        while True:
-            data = await websocket.receive_text()
-            # If front-end pings us to keepalive or update activity:
-            user = db.query(models.User).filter(models.User.id == user_id).first()
-            if user:
-                user.last_active_at = datetime.utcnow()
-                db.commit()
-    except WebSocketDisconnect:
-        manager.disconnect(websocket, user_id, db)
-    except Exception as e:
-        manager.disconnect(websocket, user_id, db)
+        from jose import JWTError, jwt
+        payload = jwt.decode(token, auth.SECRET_KEY, algorithms=[auth.ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            logger.warning(f"WS AUTH FAILED: user_id={user_id}, ip={ip_addr}, reason=Missing sub in token, token={mask_sensitive('token', token)}")
+            await websocket.close(code=1008)
+            return
+    except JWTError as e:
+        logger.warning(f"WS AUTH FAILED: user_id={user_id}, ip={ip_addr}, reason=JWT decode error: {str(e)}, token={mask_sensitive('token', token)}")
+        await websocket.close(code=1008)
+        return
+
+    db = SessionLocal()
+    try:
+        user = crud.get_user_by_username(db, username=username)
+        if user is None or user.id != user_id:
+            reason = "User not found" if user is None else f"ID mismatch (token user ID {user.id} vs requested {user_id})"
+            logger.warning(f"WS AUTH FAILED: user_id={user_id}, ip={ip_addr}, reason={reason}")
+            await websocket.close(code=1008)
+            return
+        if not getattr(user, 'is_active', True) or getattr(user, 'locked_out', False):
+            logger.warning(f"WS AUTH FAILED: user_id={user_id}, ip={ip_addr}, reason=Account inactive/locked")
+            await websocket.close(code=1008)
+            return
+            
+        logger.info(f"WS CONNECTED: user_id={user_id}, ip={ip_addr}")
+        await manager.connect(websocket, user_id, db)
+        try:
+            while True:
+                data = await websocket.receive_text()
+                # If front-end pings us to keepalive or update activity:
+                user = db.query(models.User).filter(models.User.id == user_id).first()
+                if user:
+                    user.last_active_at = datetime.utcnow()
+                    db.commit()
+        except WebSocketDisconnect as e:
+            logger.info(f"WS DISCONNECTED: user_id={user_id}, ip={ip_addr}, code={e.code}")
+            manager.disconnect(websocket, user_id, db)
+        except Exception as e:
+            logger.error(f"WS ERROR: user_id={user_id}, ip={ip_addr} | Error: {str(e)}", exc_info=True)
+            manager.disconnect(websocket, user_id, db)
     finally:
         db.close()
 

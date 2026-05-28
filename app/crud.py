@@ -1,8 +1,12 @@
 from sqlalchemy.orm import Session, joinedload, selectinload
 from sqlalchemy import func
+from sqlalchemy.exc import SQLAlchemyError
 from typing import Optional
 from datetime import datetime, timedelta, date
 from . import models, schemas, auth
+from .logger import get_logger
+
+logger = get_logger("app.crud")
 
 # --- User/Customer CRUD ---
 def get_dashboard_metrics(db: Session):
@@ -249,7 +253,10 @@ def get_users(db: Session, skip: int = 0, limit: int = 500000):
     ).order_by(models.User.username.asc()).offset(skip).limit(limit).all()
 
 def get_user(db: Session, user_id: int):
-    return db.query(models.User).filter(models.User.id == user_id).first()
+    res = db.query(models.User).filter(models.User.id == user_id).first()
+    if res is None:
+        logger.warning(f"User id={user_id} not found — called from get_user")
+    return res
 
 def create_user(db: Session, user: schemas.UserCreate, current_user: models.User = None):
     from fastapi import HTTPException
@@ -389,7 +396,10 @@ def get_customers(db: Session, skip: int = 0, limit: int = 500000):
     return db.query(models.Customer).options(selectinload(models.Customer.locations)).order_by(models.Customer.name.asc()).offset(skip).limit(limit).all()
 
 def get_customer(db: Session, customer_id: int):
-    return db.query(models.Customer).filter(models.Customer.id == customer_id).first()
+    res = db.query(models.Customer).filter(models.Customer.id == customer_id).first()
+    if res is None:
+        logger.warning(f"Customer id={customer_id} not found — called from get_customer")
+    return res
 
 def create_customer(db: Session, customer: schemas.CustomerCreate, current_user: models.User):
     # db_cust = models.Customer(**customer.model_dump())
@@ -504,7 +514,7 @@ def delete_location(db: Session, location_id: int):
 
 # --- Project CRUD ---
 def get_project(db: Session, project_id: int):
-    return db.query(models.Project).options(
+    res = db.query(models.Project).options(
         joinedload(models.Project.customer),
         joinedload(models.Project.location),
         joinedload(models.Project.lead),
@@ -518,6 +528,9 @@ def get_project(db: Session, project_id: int):
         selectinload(models.Project.milestones).selectinload(models.Milestone.line_items),
         selectinload(models.Project.expenses).selectinload(models.Expense.attachments)
     ).filter(models.Project.id == project_id).first()
+    if res is None:
+        logger.warning(f"Project id={project_id} not found — called from get_project")
+    return res
 
 def get_projects(db: Session, skip: int = 0, limit: int = 500000, unbilled_only: bool = False):
     query = db.query(models.Project).options(
@@ -846,15 +859,19 @@ def create_invoice(db: Session, invoice: schemas.InvoiceCreate, current_user: mo
     db.commit()
     db.refresh(db_invoice)
 
+    logger.info(f"INVOICE CREATED: invoice_id={db_invoice.id}, project_id={db_invoice.project_id}, amount=0.0, created_by={current_user.id}")
     return db_invoice
 
 def get_invoice(db: Session, invoice_id: int):
-    return db.query(models.Invoice).options(
+    res = db.query(models.Invoice).options(
         selectinload(models.Invoice.items), 
         joinedload(models.Invoice.project).joinedload(models.Project.customer),
         joinedload(models.Invoice.created_by_user),
         joinedload(models.Invoice.updated_by_user)
     ).filter(models.Invoice.id == invoice_id).first()
+    if res is None:
+        logger.warning(f"Invoice id={invoice_id} not found — called from get_invoice")
+    return res
 
 def delete_invoice(db: Session, invoice_id: int):
     invoice = db.query(models.Invoice).filter(models.Invoice.id == invoice_id).first()
@@ -1065,8 +1082,12 @@ def generate_invoice_from_milestones(db: Session, data: schemas.InvoiceGenerate,
             updated_by_id=current_user.id
         )
         db.add(audit)
+        logger.info(f"MILESTONE BILLED: milestone_id={milestone.id}, amount={bill_amount}, invoice_id={db_invoice.id}")
     
     db.commit()
+    db.refresh(db_invoice)
+    total_amount = sum((getattr(li, 'amount', 0.0) or 0.0) for li in getattr(db_invoice, 'items', []))
+    logger.info(f"INVOICE CREATED: invoice_id={db_invoice.id}, project_id={db_invoice.project_id}, amount={total_amount}, created_by={current_user.id}")
     return db_invoice
 
 # --- Lead CRUD ---
@@ -1086,6 +1107,7 @@ def update_leads_bulk(db: Session, leads: list[schemas.LeadBulkUpdate], current_
             updated_ids.append(db_lead.id)
     
     db.commit()
+    logger.info(f"Bulk operations: updated {len(updated_ids)} leads in update_leads_bulk")
     return db.query(models.Lead).filter(models.Lead.id.in_(updated_ids)).all()
 
 # --- Comment CRUD ---
@@ -1339,13 +1361,16 @@ def get_tasks(db: Session, skip: int = 0, limit: int = 500000,
     return query.order_by(models.Task.status.asc(), models.Task.due_date.asc()).offset(skip).limit(limit).all()
 
 def get_task(db: Session, task_id: int):
-    return db.query(models.Task).filter(models.Task.id == task_id).options(
+    res = db.query(models.Task).filter(models.Task.id == task_id).options(
         joinedload(models.Task.assigned_to),
         joinedload(models.Task.project),
         joinedload(models.Task.milestone),
         joinedload(models.Task.created_by_user),
         selectinload(models.Task.events).joinedload(models.TaskEvent.user)
     ).first()
+    if res is None:
+        logger.warning(f"Task id={task_id} not found — called from get_task")
+    return res
 
 def get_task_analysis_report(db: Session, start_date: Optional[date] = None, end_date: Optional[date] = None, user_id: Optional[int] = None, task_type: Optional[str] = None):
     # Base query for events
@@ -2059,6 +2084,8 @@ def create_invoice_payment(db: Session, payment: schemas.InvoicePaymentCreate, i
     db.commit()
     db.refresh(db_payment)
     
+    logger.info(f"PAYMENT RECORDED: invoice_id={invoice_id}, amount={db_payment.amount}, method={db_payment.payment_method}, recorded_by={current_user.id}")
+    
     # Recalculate Invoice totals
     recalculate_invoice_amount_paid(db, invoice_id)
     
@@ -2124,10 +2151,13 @@ def get_pto_banks(db: Session, year: int = None):
     return query.all()
 
 def get_pto_bank(db: Session, user_id: int, year: int):
-    return db.query(models.PTOBank).filter(
+    res = db.query(models.PTOBank).filter(
         models.PTOBank.user_id == user_id,
         models.PTOBank.year == year
     ).first()
+    if res is None:
+        logger.warning(f"PTOBank user_id={user_id} year={year} not found — called from get_pto_bank")
+    return res
 
 def create_pto_request(db: Session, pto_request: schemas.PTORequestCreate, current_user: models.User):
     data = pto_request.model_dump()
@@ -2160,6 +2190,7 @@ def update_pto_request_status(db: Session, request_id: int, status: str, current
     if not db_req:
         return None
     
+    old_status = db_req.status
     db_req.status = status
     if status == models.PTOStatus.MANAGER_APPROVED or status == models.PTOStatus.REJECTED:
         db_req.manager_id = current_user.id
@@ -2187,9 +2218,10 @@ def update_pto_request_status(db: Session, request_id: int, status: str, current
             if o365_id:
                 db_req.o365_event_id = o365_id
         except Exception as e:
-            print(f"[O365 Sync Error on PTO] {str(e)}")
+            logger.error(f"[O365 Sync Error on PTO] {str(e)}")
         
     db.commit()
+    logger.info(f"PTO Request {request_id}: status changed from {old_status} to {status} by user_id={current_user.id}")
     db.refresh(db_req)
     return db_req
 

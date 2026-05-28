@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../utils/api';
+import { log, showToast } from '../utils/logger';
 import { Calendar, dateFnsLocalizer } from 'react-big-calendar';
 import { format, parse, startOfWeek, endOfWeek, getDay } from 'date-fns';
 import enUS from 'date-fns/locale/en-US';
@@ -70,7 +71,8 @@ export default function CalendarView() {
                 }));
                 setEvents(formatted);
             } catch (err) {
-                console.error('Failed to load calendar events', err);
+                log.error('CalendarView', 'Failed to load calendar events', err);
+                showToast('Failed to load calendar events.');
             }
         };
         fetchEvents();

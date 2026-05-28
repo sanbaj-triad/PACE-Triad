@@ -1,3 +1,5 @@
+import { log } from './logger';
+
 const API_BASE = ''; // Proxy handles base URL
 
 const getHeaders = () => {
@@ -8,13 +10,20 @@ const getHeaders = () => {
     };
 };
 
-export const api = {
-    get: async (endpoint) => {
+const handleRequest = async (method, endpoint, options = {}) => {
+    const start = Date.now();
+    log.info('API', `REQUEST: ${method} ${endpoint}`);
+    try {
         const response = await fetch(`${API_BASE}${endpoint}`, {
-            method: 'GET',
-            headers: getHeaders(),
+            method,
+            ...options
         });
+        
+        const duration = Date.now() - start;
+        log.info('API', `RESPONSE: ${method} ${endpoint} | Status: ${response.status} | Duration: ${duration}ms`);
+
         if (response.status === 401) {
+            log.warn('API', `UNAUTHORIZED: ${method} ${endpoint} | Redirecting to login`);
             localStorage.removeItem('token');
             localStorage.removeItem('user');
             if (window.location.pathname !== '/login') {
@@ -22,8 +31,10 @@ export const api = {
             }
             throw new Error('Unauthorized');
         }
+
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
+            log.error('API', `FAILURE: ${method} ${endpoint} | Status: ${response.status} | Details:`, errorData);
             if (response.status === 503 && errorData.detail === "MAINTENANCE_MODE") {
                 if (window.location.pathname !== '/maintenance') window.location.href = '/maintenance';
                 return new Promise(() => {}); // freeze resolving
@@ -32,39 +43,35 @@ export const api = {
             error.response = { data: errorData, status: response.status };
             throw error;
         }
-        return response.json();
+
+        if (method === 'DELETE') {
+            return true;
+        }
+        return await response.json();
+    } catch (error) {
+        if (error.message !== 'Unauthorized' && error.message !== 'API Error') {
+            log.error('API', `EXCEPTION: ${method} ${endpoint} | Message: ${error.message}`, error);
+        }
+        throw error;
+    }
+};
+
+export const api = {
+    get: async (endpoint) => {
+        return handleRequest('GET', endpoint, {
+            headers: getHeaders()
+        });
     },
     post: async (endpoint, data) => {
         const isFormData = data instanceof FormData;
         const headers = getHeaders();
         if (isFormData) {
-            delete headers['Content-Type']; // Let browser set multipart/form-data with boundary
+            delete headers['Content-Type'];
         }
-
-        const response = await fetch(`${API_BASE}${endpoint}`, {
-            method: 'POST',
-            headers: headers,
-            body: isFormData ? data : JSON.stringify(data),
+        return handleRequest('POST', endpoint, {
+            headers,
+            body: isFormData ? data : JSON.stringify(data)
         });
-        if (response.status === 401) {
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            if (window.location.pathname !== '/login') {
-                window.location.href = '/login';
-            }
-            throw new Error('Unauthorized');
-        }
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            if (response.status === 503 && errorData.detail === "MAINTENANCE_MODE") {
-                if (window.location.pathname !== '/maintenance') window.location.href = '/maintenance';
-                return new Promise(() => {}); // freeze resolving
-            }
-            const error = new Error('API Error');
-            error.response = { data: errorData, status: response.status };
-            throw error;
-        }
-        return response.json();
     },
     put: async (endpoint, data) => {
         const isFormData = data instanceof FormData;
@@ -72,39 +79,14 @@ export const api = {
         if (isFormData) {
             delete headers['Content-Type'];
         }
-
-        const response = await fetch(`${API_BASE}${endpoint}`, {
-            method: 'PUT',
-            headers: headers,
-            body: isFormData ? data : JSON.stringify(data),
+        return handleRequest('PUT', endpoint, {
+            headers,
+            body: isFormData ? data : JSON.stringify(data)
         });
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            if (response.status === 503 && errorData.detail === "MAINTENANCE_MODE") {
-                if (window.location.pathname !== '/maintenance') window.location.href = '/maintenance';
-                return new Promise(() => {}); // freeze resolving
-            }
-            const error = new Error('API Error');
-            error.response = { data: errorData, status: response.status };
-            throw error;
-        }
-        return response.json();
     },
     delete: async (endpoint) => {
-        const response = await fetch(`${API_BASE}${endpoint}`, {
-            method: 'DELETE',
-            headers: getHeaders(),
+        return handleRequest('DELETE', endpoint, {
+            headers: getHeaders()
         });
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            if (response.status === 503 && errorData.detail === "MAINTENANCE_MODE") {
-                if (window.location.pathname !== '/maintenance') window.location.href = '/maintenance';
-                return new Promise(() => {}); // freeze resolving
-            }
-            const error = new Error('API Error');
-            error.response = { data: errorData, status: response.status };
-            throw error;
-        }
-        return true;
     }
 };

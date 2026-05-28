@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { useAuth } from './AuthContext';
 import { api } from '../utils/api';
+import { log } from '../utils/logger';
 
 const NotificationContext = createContext();
 
@@ -13,6 +14,7 @@ export const NotificationProvider = ({ children }) => {
     useEffect(() => {
         if (!user || !user.id || !token) {
             if (ws.current) {
+                log.info('WebSocket', `Closing socket because user/token cleared`);
                 ws.current.close();
                 ws.current = null;
             }
@@ -27,7 +29,7 @@ export const NotificationProvider = ({ children }) => {
                 setNotifications(res);
                 setUnreadCount(res.filter(n => !n.is_read).length);
             } catch (err) {
-                console.error("Failed to fetch notifications", err);
+                log.error('WebSocket', 'Failed to fetch notifications', err);
             }
         };
         fetchNotifications();
@@ -41,16 +43,17 @@ export const NotificationProvider = ({ children }) => {
             if (import.meta.env.VITE_API_URL) {
                 const apiBase = import.meta.env.VITE_API_URL;
                 const isHttps = apiBase.startsWith('https');
-                wsUrl = apiBase.replace(/^https?:\/\//, isHttps ? 'wss://' : 'ws://') + `/ws/notifications/${user.id}`;
+                wsUrl = apiBase.replace(/^https?:\/\//, isHttps ? 'wss://' : 'ws://') + `/ws/notifications/${user.id}?token=${token}`;
             } else {
                 const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-                wsUrl = `${protocol}//${window.location.host}/ws/notifications/${user.id}`;
+                wsUrl = `${protocol}//${window.location.host}/ws/notifications/${user.id}?token=${token}`;
             }
 
+            log.info('WebSocket', `Attempting connection for user_id=${user.id}`);
             ws.current = new WebSocket(wsUrl);
 
             ws.current.onopen = () => {
-                console.log("WebSocket connected for presence/notifications");
+                log.info('WebSocket', `Connected successfully for user_id=${user.id}`);
             };
 
             ws.current.onmessage = (event) => {
@@ -61,16 +64,22 @@ export const NotificationProvider = ({ children }) => {
                         setUnreadCount(prev => prev + 1);
                     }
                 } catch(err) {
-                    console.error("WS parse error", err);
+                    log.error('WebSocket', 'Failed to parse message payload', err);
                 }
             };
 
-            ws.current.onclose = () => {
+            ws.current.onclose = (event) => {
+                const code = event.code;
                 ws.current = null;
-                // Simple reconnect logic
-                setTimeout(() => {
-                    if (user && token) connectWs();
-                }, 5000);
+                if (code === 1008) {
+                    log.error('WebSocket', `Connection rejected (Auth Policy Failure, code 1008)`);
+                } else {
+                    log.warn('WebSocket', `Disconnected (code ${code}). Reconnecting in 5s...`);
+                    // Simple reconnect logic
+                    setTimeout(() => {
+                        if (user && token) connectWs();
+                    }, 5000);
+                }
             };
         };
 
@@ -100,7 +109,7 @@ export const NotificationProvider = ({ children }) => {
             setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: true } : n));
             setUnreadCount(prev => Math.max(0, prev - 1));
         } catch (err) {
-            console.error("Failed to mark as read", err);
+            log.error('WebSocket', 'Failed to mark notification as read', err);
         }
     };
 

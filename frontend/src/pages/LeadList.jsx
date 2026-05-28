@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../utils/api';
+import { log, showToast } from '../utils/logger';
 import { useNavigate } from 'react-router-dom';
 import { exportToCSV, exportToPDF } from '../utils/exportUtils';
 import useSessionState from '../hooks/useSessionState';
@@ -81,7 +82,8 @@ const LeadList = () => {
                 setCustomers(customersData);
                 setLocations(locationsData);
             } catch (err) {
-                console.error("Failed to fetch data", err);
+                log.error('LeadList', 'Failed to fetch initial page data (leads, customers, locations)', err);
+                showToast('Failed to load leads and reference data.');
             } finally {
                 setLoading(false);
             }

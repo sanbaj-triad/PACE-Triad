@@ -1,11 +1,41 @@
 from apscheduler.schedulers.background import BackgroundScheduler
-from datetime import datetime
+from datetime import datetime, date, timedelta
+import time
+import traceback
+from functools import wraps
 from sqlalchemy.orm import Session
 from .database import SessionLocal
 from . import models
+from .logger import get_logger
 
+logger = get_logger("app.scheduler")
+
+def scheduler_job(job_name: str):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            triggered_at = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+            logger.info(f"JOB START: {job_name}, triggered_at={triggered_at}")
+            start_time = time.time()
+            try:
+                records_affected = func(*args, **kwargs)
+                duration_ms = int((time.time() - start_time) * 1000)
+                if not isinstance(records_affected, int):
+                    records_affected = 0
+                logger.info(f"JOB END: {job_name}, duration_ms={duration_ms}, records_affected={records_affected}")
+                return records_affected
+            except Exception as e:
+                duration_ms = int((time.time() - start_time) * 1000)
+                tb = traceback.format_exc()
+                logger.error(f"JOB FAILED: {job_name}, exception message: {str(e)} | traceback: {tb}")
+                raise e
+        return wrapper
+    return decorator
+
+@scheduler_job("check_task_deadlines")
 def check_task_deadlines():
     db: Session = SessionLocal()
+    records_affected = 0
     try:
         now = datetime.utcnow()
         today = now.date()
@@ -31,6 +61,7 @@ def check_task_deadlines():
                         link=f"/portal/tasks/{task.id}" 
                     )
                     db.add(warn)
+                    records_affected += 1
             
             # Overdue Warning: Missed Due Date by exactly 1 day 
             elif diff_days == -1:
@@ -68,6 +99,7 @@ def check_task_deadlines():
                         link=f"/portal/tasks/{task.id}"
                     )
                     db.add(alert)
+                    records_affected += 1
                     
                 # MS Teams Integration (Overdue Only)
                 try:
@@ -78,25 +110,25 @@ def check_task_deadlines():
                         action_url=f"/portal/tasks/{task.id}"
                     )
                 except Exception as e:
-                    print(f"MS Teams Scheduler Hook Failed: {e}")
-
-
+                    logger.warning(f"MS Teams Scheduler Hook Failed: {e}")
         
         db.commit()
     except Exception as e:
         db.rollback()
-        import traceback
-        print(f"APScheduler Background Error: {e}\n{traceback.format_exc()}")
+        raise e
     finally:
         db.close()
+    return records_affected
 
+@scheduler_job("sync_o365_master_to_local")
 def sync_o365_master_to_local():
     db: Session = SessionLocal()
+    records_affected = 0
     try:
         from .graph_service import pull_events_from_o365
         events = pull_events_from_o365()
         if not events:
-            return
+            return 0
             
         def parse_graph_date(dt_str):
             try:
@@ -124,6 +156,7 @@ def sync_o365_master_to_local():
                 if pto.start_date != new_st or pto.end_date != new_ed:
                     pto.start_date = new_st
                     pto.end_date = new_ed
+                    records_affected += 1
                 
             # Attempt to update Task
             task = db.query(models.Task).filter(models.Task.o365_event_id == ev_id).first()
@@ -131,18 +164,21 @@ def sync_o365_master_to_local():
                 if task.start_date != new_st or task.due_date != new_ed:
                     task.start_date = new_st
                     task.due_date = new_ed
+                    records_affected += 1
                 
         db.commit()
     except Exception as e:
         db.rollback()
-        print(f"O365 2-Way Sync Error: {e}")
+        raise e
     finally:
         db.close()
+    return records_affected
 
+@scheduler_job("process_recurring_invoices")
 def process_recurring_invoices():
     db: Session = SessionLocal()
+    records_affected = 0
     try:
-        from datetime import date, timedelta, datetime
         from . import schemas
         from . import crud
         
@@ -182,8 +218,10 @@ def process_recurring_invoices():
                     crud.generate_invoice_from_milestones(db=db, data=gen_data, current_user=system_user)
                     p.next_invoice_date = advance_date(p.next_invoice_date, p.recurring_invoice_frequency)
                     db.commit()
-                except:
+                    records_affected += 1
+                except Exception as e:
                     db.rollback()
+                    logger.error(f"Failed to generate recurring invoice for project {p.id}: {str(e)}")
 
         # 2. Milestone Level
         milestones = db.query(models.Milestone).join(models.Project).filter(
@@ -209,14 +247,16 @@ def process_recurring_invoices():
                 for m in ms:
                     m.next_invoice_date = advance_date(m.next_invoice_date, m.recurring_invoice_frequency)
                 db.commit()
-            except:
+                records_affected += 1
+            except Exception as e:
                 db.rollback()
+                logger.error(f"Failed to generate recurring invoice for project {project_id} milestones: {str(e)}")
 
     except Exception as e:
-        import traceback
-        print(f"APScheduler Recurring Invoice Error: {e}")
+        raise e
     finally:
         db.close()
+    return records_affected
 
 def start_scheduler():
     scheduler = BackgroundScheduler()
@@ -230,4 +270,4 @@ def start_scheduler():
     scheduler.add_job(sync_o365_master_to_local, 'interval', minutes=15)
     
     scheduler.start()
-    print("APScheduler Background Process Initialized: Deadlines checked at 08:00 AM, O365 Sync every 15m")
+    logger.info("APScheduler Background Process Initialized: Deadlines checked at 08:00 AM, O365 Sync every 15m")

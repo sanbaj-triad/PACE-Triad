@@ -3,6 +3,9 @@ import requests
 import base64
 from sqlalchemy.orm import Session
 from . import crud
+from .logger import get_logger
+
+logger = get_logger("app.xero")
 
 AUTH_URL = "https://identity.xero.com/connect/token"
 
@@ -83,11 +86,12 @@ def sync_invoice_to_xero(invoice_data, db: Session):
             headers=headers,
             json=payload
         )
-        
+        status_code = response.status_code
         if response.status_code not in (200, 201):
+            logger.error(f"XERO: endpoint=Push Invoice, entity_id={invoice_data.id}, success=False, response_code={status_code} | Details: {response.text}")
             crud.log_xero_interaction(db, endpoint="Push Invoice", entity_type="Invoice", entity_id=invoice_data.id, status="ERROR", details=response.text)
-            print(f"Xero Invoice Sync Error: {response.text}")
         else:
+            logger.info(f"XERO: endpoint=Push Invoice, entity_id={invoice_data.id}, success=True, response_code={status_code}")
             crud.log_xero_interaction(db, endpoint="Push Invoice", entity_type="Invoice", entity_id=invoice_data.id, status="SUCCESS", details=response.text)
             
         response.raise_for_status()
@@ -97,8 +101,8 @@ def sync_invoice_to_xero(invoice_data, db: Session):
             return result['Invoices'][0]['InvoiceID']
         return None
     except Exception as e:
+        logger.error(f"XERO: endpoint=Push Invoice, entity_id={invoice_data.id}, success=False, response_code=500 | Error: {str(e)}")
         crud.log_xero_interaction(db, endpoint="Push Invoice", entity_type="Invoice", entity_id=invoice_data.id, status="ERROR", details=str(e))
-        print(f"Error syncing to Xero: {e}")
         raise e
 
 def get_invoice_from_xero(xero_id: str, db: Session = None):
@@ -117,6 +121,8 @@ def get_invoice_from_xero(xero_id: str, db: Session = None):
             f'https://api.xero.com/api.xro/2.0/Invoices/{xero_id}',
             headers=headers
         )
+        status_code = response.status_code
+        logger.info(f"XERO: endpoint=Fetch Invoice, entity_id={xero_id}, success=True, response_code={status_code}")
         response.raise_for_status()
         result = response.json()
         
@@ -127,9 +133,9 @@ def get_invoice_from_xero(xero_id: str, db: Session = None):
             return result['Invoices'][0]
         return None
     except Exception as e:
+        logger.error(f"XERO: endpoint=Fetch Invoice, entity_id={xero_id}, success=False | Error: {str(e)}")
         if db:
             crud.log_xero_interaction(db, endpoint="Fetch Invoice", entity_type="Invoice", status="ERROR", details=str(e))
-        print(f"Error fetching from Xero: {e}")
         return None
 
 def push_payment_to_xero(invoice_xero_id: str, amount: float, date_str: str, account_code: str, reference: str, db: Session):
@@ -174,11 +180,12 @@ def push_payment_to_xero(invoice_xero_id: str, amount: float, date_str: str, acc
             headers=headers,
             json=payload
         )
-        
+        status_code = response.status_code
         if response.status_code not in (200, 201):
+            logger.error(f"XERO: endpoint=Push Payment, entity_id={invoice_xero_id}, success=False, response_code={status_code} | Details: {response.text}")
             crud.log_xero_interaction(db, endpoint="Push Payment", entity_type="Payment", status="ERROR", details=response.text)
-            print(f"Xero Payment Push Error: {response.text}")
         else:
+            logger.info(f"XERO: endpoint=Push Payment, entity_id={invoice_xero_id}, success=True, response_code={status_code}")
             crud.log_xero_interaction(db, endpoint="Push Payment", entity_type="Payment", status="SUCCESS", details=response.text)
             
         response.raise_for_status()
@@ -188,8 +195,8 @@ def push_payment_to_xero(invoice_xero_id: str, amount: float, date_str: str, acc
             return result['Payments'][0]
         return None
     except Exception as e:
+        logger.error(f"XERO: endpoint=Push Payment, entity_id={invoice_xero_id}, success=False, response_code=500 | Error: {str(e)}")
         crud.log_xero_interaction(db, endpoint="Push Payment", entity_type="Payment", status="ERROR", details=str(e))
-        print(f"Error pushing payment to Xero: {e}")
         raise e
 
 def get_bank_accounts(db: Session = None):
@@ -207,9 +214,11 @@ def get_bank_accounts(db: Session = None):
             'https://api.xero.com/api.xro/2.0/Accounts?Where=Type=="BANK"',
             headers=headers
         )
+        status_code = response.status_code
+        logger.info(f"XERO: endpoint=Get Bank Accounts, success=True, response_code={status_code}")
         response.raise_for_status()
         result = response.json()
         return result.get('Accounts', [])
     except Exception as e:
-        print(f"Error fetching bank accounts from Xero: {e}")
+        logger.error(f"XERO: endpoint=Get Bank Accounts, success=False | Error: {str(e)}")
         return []

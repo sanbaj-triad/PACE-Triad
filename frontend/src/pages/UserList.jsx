@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../utils/api';
+import { log, showToast } from '../utils/logger';
 import { Link } from 'react-router-dom';
 import OffboardWizard from '../components/OffboardWizard';
 import { useAuth } from '../context/AuthContext';
@@ -87,7 +88,13 @@ const UserList = () => {
 
     const triggerRefresh = () => {
         setLoading(true);
-        api.get('/users/').then(data => setUsers(Array.isArray(data) ? data : [])).finally(() => setLoading(false));
+        api.get('/users/')
+            .then(data => setUsers(Array.isArray(data) ? data : []))
+            .catch(err => {
+                log.error('UserList', 'Failed to refresh user list', err);
+                showToast('Failed to load users. Please try again.');
+            })
+            .finally(() => setLoading(false));
     };
 
     useEffect(() => {
@@ -122,7 +129,11 @@ const UserList = () => {
     const [customers, setCustomers] = useState([]);
 
     useEffect(() => {
-        api.get('/customers/').then(data => setCustomers(Array.isArray(data) ? data : []));
+        api.get('/customers/')
+            .then(data => setCustomers(Array.isArray(data) ? data : []))
+            .catch(err => {
+                log.error('UserList', 'Failed to load customers reference data', err);
+            });
     }, []);
 
     const handleBulkChange = (id, field, value) => {

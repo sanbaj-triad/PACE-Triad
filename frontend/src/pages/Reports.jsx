@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../utils/api';
 import { Link } from 'react-router-dom';
+import { log, showToast } from '../utils/logger';
 
 
 const Reports = ({ view }) => {
@@ -24,7 +25,8 @@ const Reports = ({ view }) => {
                 const result = await api.get(endpoint);
                 setData(result);
             } catch (err) {
-                console.error("Failed to load report data", err);
+                log.error('Reports', 'Failed to load report data', err);
+                showToast('Failed to load report data.');
             } finally {
                 setLoading(false);
             }

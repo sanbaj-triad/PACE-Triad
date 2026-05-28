@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { log } from '../utils/logger';
 
 const AuthContext = createContext(null);
 
@@ -12,7 +13,9 @@ export const AuthProvider = ({ children }) => {
         if (token) {
             const storedUser = localStorage.getItem('user');
             if (storedUser) {
-                setUser(JSON.parse(storedUser));
+                const parsed = JSON.parse(storedUser);
+                setUser(parsed);
+                log.debug('Auth', `Session restored for user_id=${parsed.id}`);
             }
             const forceResetSaved = localStorage.getItem('force_reset');
             if (forceResetSaved === 'true') {
@@ -38,6 +41,7 @@ export const AuthProvider = ({ children }) => {
             });
 
             if (!response.ok) {
+                log.warn('Auth', `Login failed for username=${username} | Status: ${response.status}`);
                 throw new Error('Login failed');
             }
 
@@ -55,14 +59,19 @@ export const AuthProvider = ({ children }) => {
             setUser(userData);
             setForcePasswordReset(requiresReset);
             
+            log.info('Auth', `User logged in successfully: user_id=${userData.id}`);
             return true;
         } catch (error) {
-            console.error("Login error", error);
+            log.error('Auth', `Login error for username=${username}: ${error.message}`, error);
             return false;
         }
     };
 
     const logout = () => {
+        const storedUser = localStorage.getItem('user');
+        const userId = storedUser ? JSON.parse(storedUser).id : 'unknown';
+        log.info('Auth', `User logged out: user_id=${userId}`);
+        
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         localStorage.removeItem('force_reset');

@@ -3,6 +3,7 @@ import { api } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { hasFinancialAccess } from '../utils/rbac';
+import { log, showToast } from '../utils/logger';
 
 
 const PTODashboard = () => {
@@ -29,7 +30,10 @@ const PTODashboard = () => {
         try {
             const res = await api.get(`/pto/my-balance?year=${currentYear}`);
             setMyBalance(res);
-        } catch(e) { console.error('Failed to fetch my balance', e); }
+        } catch(e) {
+            log.error('PTODashboard', 'Failed to fetch my balance', e);
+            showToast('Failed to load PTO balance details.');
+        }
     }
 
     const fetchMyRequests = async () => {
@@ -43,21 +47,30 @@ const PTODashboard = () => {
                 setMyRequests(res.filter(r => r.user_id === user.id));
                 setAllRequests(res);
             }
-        } catch(e) { console.error('Failed to fetch requests', e); }
+        } catch(e) {
+            log.error('PTODashboard', 'Failed to fetch requests', e);
+            showToast('Failed to load your PTO requests.');
+        }
     }
 
     const fetchLedger = async () => {
         try {
             const res = await api.get(`/pto/ledger?year=${currentYear}`);
             setLedger(res);
-        } catch(e) { console.error('Failed to fetch ledger', e); }
+        } catch(e) {
+            log.error('PTODashboard', 'Failed to fetch ledger', e);
+            showToast('Failed to load admin PTO ledger.');
+        }
     }
     
     const fetchUsers = async () => {
         try {
            const res = await api.get('/users/');
            setUsers(res.filter(u => u.is_employee || u.role === 'admin'));
-        } catch (e) {}
+        } catch (e) {
+            log.error('PTODashboard', 'Failed to fetch users reference list', e);
+            showToast('Failed to load active employees list.');
+        }
     }
 
     useEffect(() => {

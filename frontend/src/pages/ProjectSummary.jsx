@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../utils/api';
+import { log, showToast } from '../utils/logger';
 
 export default function ProjectSummary() {
     const [projects, setProjects] = useState([]);
@@ -17,7 +18,8 @@ export default function ProjectSummary() {
             const data = await api.get('/projects/summary');
             setProjects(data || []);
         } catch (error) {
-            console.error("Failed to fetch project summary:", error);
+            log.error('ProjectSummary', 'Failed to fetch project summary data', error);
+            showToast('Failed to load project summary.');
         }
         setLoading(false);
     };

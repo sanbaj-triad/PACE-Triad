@@ -2,6 +2,9 @@ import os
 import requests
 from datetime import datetime
 from app.config import settings
+from .logger import get_logger, mask_email
+
+logger = get_logger("app.mail")
 
 MAILGUN_API_KEY = settings.mailgun_api_key
 MAILGUN_DOMAIN = settings.mailgun_domain
@@ -18,8 +21,10 @@ def log_email(message):
         print(f"Failed to log email: {e}")
 
 def send_invoice_email(to_emails, subject, text_body, pdf_bytes, filename, cc_emails=None, sender_name="Invoice System"):
+    masked_to = mask_email(to_emails) if isinstance(to_emails, str) else [mask_email(e) for e in to_emails]
     if not MAILGUN_API_KEY or not MAILGUN_DOMAIN:
         log_email("Error: Mailgun configuration missing.")
+        logger.error(f"MAILGUN: Failed to send invoice email to {masked_to} | Error: Mailgun configuration missing")
         return False, "Mailgun configuration missing"
 
     url = f"https://api.mailgun.net/v3/{MAILGUN_DOMAIN}/messages"
@@ -47,8 +52,6 @@ def send_invoice_email(to_emails, subject, text_body, pdf_bytes, filename, cc_em
     if cc_value:
         data["cc"] = cc_value
 
-    # Save to a temporary file to strictly match user's "open file" pattern
-    # This avoids any ambiguity with BytesIO or in-memory streams
     import tempfile
     
     # Create a temp file path but don't keep the file open yet
@@ -60,8 +63,6 @@ def send_invoice_email(to_emails, subject, text_body, pdf_bytes, filename, cc_em
             f.write(pdf_bytes)
             
         with open(temp_path, "rb") as f:
-            # Explicitly set Mime Type to ensure client treats it as PDF
-            # Explicitly set Mime Type to ensure client treats it as PDF
             files = [
                 ("attachment", (filename, f, "application/pdf"))
             ]
@@ -73,23 +74,28 @@ def send_invoice_email(to_emails, subject, text_body, pdf_bytes, filename, cc_em
             
         if response.status_code == 200:
             log_email(f"Sent Email '{filename}' to {to_emails} (CC: {cc_emails}) | Subject: {subject}")
+            logger.info(f"MAILGUN: Sent invoice email to {masked_to} | filename={filename} | Subject: {subject}")
             return True, "Email sent successfully"
         else:
             error_msg = f"Failed to send email. Status: {response.status_code}, Response: {response.text}"
             log_email(error_msg)
+            logger.error(f"MAILGUN: Failed to send invoice email to {masked_to} | Status: {response.status_code} | Error: {response.text}")
             return False, error_msg
             
     except Exception as e:
         error_msg = f"Exception sending email: {str(e)}"
         log_email(error_msg)
+        logger.error(f"MAILGUN: Failed to send invoice email to {masked_to} | Exception: {str(e)}")
         return False, error_msg
 
 def send_system_email(to_emails, subject, text_body, sender_name="PACE System"):
     """
     Sends a generic system email without any PDF attachments.
     """
+    masked_to = mask_email(to_emails) if isinstance(to_emails, str) else [mask_email(e) for e in to_emails]
     if not MAILGUN_API_KEY or not MAILGUN_DOMAIN:
         log_email("Error: Mailgun configuration missing.")
+        logger.error(f"MAILGUN: Failed to send system email to {masked_to} | Error: Mailgun configuration missing")
         return False, "Mailgun configuration missing"
 
     url = f"https://api.mailgun.net/v3/{MAILGUN_DOMAIN}/messages"
@@ -109,14 +115,18 @@ def send_system_email(to_emails, subject, text_body, sender_name="PACE System"):
             
         if response.status_code == 200:
             log_email(f"Sent System Email to {to_emails} | Subject: {subject}")
+            logger.info(f"MAILGUN: Sent system email to {masked_to} | Subject: {subject}")
             return True, "Email sent successfully"
         else:
             error_msg = f"Failed to send system email. Status: {response.status_code}, Response: {response.text}"
             log_email(error_msg)
+            logger.error(f"MAILGUN: Failed to send system email to {masked_to} | Status: {response.status_code} | Error: {response.text}")
             return False, error_msg
             
     except Exception as e:
         error_msg = f"Exception sending system email: {str(e)}"
         log_email(error_msg)
+        logger.error(f"MAILGUN: Failed to send system email to {masked_to} | Exception: {str(e)}")
         return False, error_msg
+
 

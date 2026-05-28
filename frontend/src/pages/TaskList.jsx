@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../utils/api';
+import { log, showToast } from '../utils/logger';
 import { useNavigate } from 'react-router-dom';
 import { exportToCSV, exportToPDF } from '../utils/exportUtils';
 import { useAuth } from '../context/AuthContext';
@@ -47,7 +48,8 @@ const TaskList = () => {
                 setTasks(taskData);
                 setUsers(userData.filter(u => u.is_employee));
             } catch (err) {
-                console.error("Failed to fetch data", err);
+                log.error('TaskList', 'Failed to fetch initial page data (tasks, users)', err);
+                showToast('Failed to load tasks and reference data.');
             } finally {
                 setLoading(false);
             }

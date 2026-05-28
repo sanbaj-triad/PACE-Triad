@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { api } from '../utils/api';
 import { Link } from 'react-router-dom';
 import useSessionState from '../hooks/useSessionState';
+import { log, showToast } from '../utils/logger';
 
 const CustomerList = () => {
     const [customers, setCustomers] = useState([]);
@@ -16,7 +17,8 @@ const CustomerList = () => {
                 const data = await api.get('/customers/');
                 setCustomers(data);
             } catch (err) {
-                console.error("Failed to load customers", err);
+                log.error('CustomerList', 'Failed to load customers list', err);
+                showToast('Failed to load customers.');
             } finally {
                 setLoading(false);
             }
@@ -30,7 +32,8 @@ const CustomerList = () => {
             const data = await api.get('/customers/');
             setCustomers(data);
         } catch (err) {
-            console.error("Failed to load customers", err);
+            log.error('CustomerList', 'Failed to reload customers list data', err);
+            showToast('Failed to load customers.');
         } finally {
             setLoading(false);
         }

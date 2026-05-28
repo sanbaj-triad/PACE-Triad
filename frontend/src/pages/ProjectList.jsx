@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { api } from '../utils/api';
+import { log, showToast } from '../utils/logger';
 import { Link } from 'react-router-dom';
 import useSessionState from '../hooks/useSessionState';
 import { useAuth } from '../context/AuthContext';
@@ -30,7 +31,8 @@ const ProjectList = () => {
             const data = await api.get('/projects/');
             setProjects(data);
         } catch (err) {
-            console.error("Failed to load projects", err);
+            log.error('ProjectList', 'Failed to load projects list', err);
+            showToast('Failed to load projects.');
         } finally {
             setLoading(false);
         }
@@ -48,7 +50,8 @@ const ProjectList = () => {
                 setCustomers(customersData);
                 setLocations(locationsData);
             } catch (err) {
-                console.error("Failed to load reference data", err);
+                log.error('ProjectList', 'Failed to load initial reference data', err);
+                showToast('Failed to load project reference lists.');
             }
         };
         fetchInitial();

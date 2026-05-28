@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 import { hasFinancialAccess } from '../utils/rbac';
+import { log, showToast } from '../utils/logger';
 
 const generateYearlyWeeks = (year, startDayOfWeek) => {
     const weeks = [];
@@ -178,7 +179,10 @@ const Timesheet = () => {
             // Actually they can just edit "Rejected" items natively because crud.py allows it.
             // "if db_event.status.value not in ['Draft', 'Rejected']"
             // Let's just leave them as Rejected and let them edit and hit submit!
-        } catch(err) {} 
+        } catch(err) {
+            log.error('Timesheet', 'Failed to revert rejected timesheet', err);
+            showToast('Failed to revert timesheet to draft.');
+        } 
         setLoading(false);
     }
     
